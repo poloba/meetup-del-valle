@@ -2,18 +2,18 @@
   <footer class="footer" ref="footer">
     <picture>
       <source
-        :srcset="`/img/pics/footer_${random}-1024w.webp 1x, /img/pics/footer_${random}-1920w.webp 2x`"
+        :srcset="`/img/pics/logo-horizontal-1024w.webp 1x, /img/pics/logo-horizontal-1920w.webp 2x`"
         type="image/webp"
       />
       <source
-        :srcset="`/img/pics/footer_${random}-1024w.jpg 1x, /img/pics/footer_${random}-1920w.jpg 2x`"
+        :srcset="`/img/pics/logo-horizontal-1024w.png 1x, /img/pics/logo-horizontal-1920w.png 2x`"
         type="image/jpeg"
       />
       <img
-        :src="`/img/pics/footer_${random}-1024w.jpg`"
+        :src="`/img/pics/logo-horizontal-1024w.png`"
         alt=""
-        width="5234"
-        height="2189"
+        width="1214"
+        height="859"
         loading="lazy"
       />
     </picture>
@@ -80,9 +80,9 @@ export default class Footer extends Vue {
   langs: Record<string, string> = langs;
 
   // eslint-disable-next-line class-methods-use-this
-  get random(): number {
-    return Math.floor(Math.random() * 4) + 1;
-  }
+  //get random(): number {
+  //  return Math.floor(Math.random() * 4) + 1;
+  //}
 
   @Watch("locale")
   // eslint-disable-next-line class-methods-use-this

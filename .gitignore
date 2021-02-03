@@ -42,3 +42,4 @@ release/
 docker/production/.env
 test-junit-report.xml
 js/junit.xml
+.DS_Store

@@ -270,7 +270,7 @@ nav {
     }
 
     svg {
-      height: 1.75rem;
+      height: 3rem;
     }
   }
 
