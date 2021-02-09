@@ -121,6 +121,7 @@ footer.footer {
 
   div.content {
     flex: 1;
+    margin-top: 24px;
   }
 
   ul {

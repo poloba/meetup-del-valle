@@ -119,9 +119,9 @@
           />
 
           <img
-            src="/img/pics/homepage-1024w.jpg"
-            width="3840"
-            height="2719"
+            src="/img/pics/homepage-1024w.png"
+            width="2000"
+            height="1125"
             alt=""
             loading="lazy"
           />
@@ -130,41 +130,34 @@
       <div class="container section">
         <div class="columns">
           <div class="column">
-            <h3 class="title">{{ $t("A practical tool") }}</h3>
-            <p
-              v-html="
-                $t(
-                  'Mobilizon is a tool that helps you <b>find, create and organise events</b>.'
-                )
-              "
-            />
+            <h3 class="title">¿Cual es el objetivo de este proyecto?</h3>
+            <p>
+              La creación del <b>​primer Valle Digital en España</b> movilizando
+              el máximo de talento, trabajo y dinero hacia la definición y en
+              marcha de varios proyectos que lo hagan realidad en 2020/21.
+            </p>
           </div>
           <div class="column">
-            <h3 class="title">{{ $t("An ethical alternative") }}</h3>
-            <p
-              v-html="
-                $t(
-                  'Ethical alternative to Facebook events, groups and pages, Mobilizon is a <b>tool designed to serve you</b>. Period.'
-                )
-              "
-            />
+            <h3 class="title">​Este es el reto</h3>
+            <p>
+              Conseguir que la comarca de
+              <b>la Sierra de la Demanda</b> reconquiste su futuro. Pensando a
+              lo grande...
+            </p>
           </div>
           <div class="column">
-            <h3 class="title">{{ $t("A federated software") }}</h3>
-            <p
-              v-html="
-                $t(
-                  'Mobilizon is not a giant platform, but a <b>multitude of interconnected Mobilizon websites</b>.'
-                )
-              "
-            />
+            <h3 class="title">Objetivos claves</h3>
+            <p>
+              La participación de toda la comarca hacia un objetivo ilusionante,
+              un espacio de encuentro donde las cosas siempre avanzan...
+            </p>
           </div>
         </div>
         <div class="buttons">
           <a
             class="button is-primary is-large"
-            href="https://joinmobilizon.org"
-            >{{ $t("Learn more about Mobilizon") }}</a
+            href="https://www.elvalledigital.es"
+            >Conoce más sobre El Valle Digital</a
           >
         </div>
       </div>
@@ -564,9 +557,21 @@ main > div > .container {
   align-items: center;
   margin: 1.5rem auto;
 
-  h3.subtitle {
+  h3.subtitle {+
     margin-left: 7px;
   }
+  h2 {
+    margin: 0;
+
+    & span {
+      font-size: 22px;
+      border-radius: 4px;
+    }
+  }
+}
+
+.upcoming-events {
+  margin-bottom: 60px;
 }
 
 section.container {
