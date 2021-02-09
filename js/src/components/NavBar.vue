@@ -267,16 +267,25 @@ nav {
   .navbar-item {
     a.button.is-primary {
       background-color: #ffd728;
+      color: #363636;
+
+      & span {
+        color: #363636 !important;
+      }
 
       &:hover {
-        color: #000;
-        background-color: #ffd000;
+        color: #000 !important;
+        background-color: #ffd000 !important;
       }
     }
 
     svg {
       height: 3rem;
     }
+  }
+
+  .navbar.is-secondary .navbar-start > .navbar-item {
+    color: #fff !important;
   }
 
   .navbar-dropdown .navbar-item {

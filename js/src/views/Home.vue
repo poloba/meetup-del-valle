@@ -643,22 +643,6 @@ section.hero {
 #picture {
   .picture-container {
     position: relative;
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        0deg,
-        $white 0,
-        rgba(0, 0, 0, 0) 5%,
-        rgba(0, 0, 0, 0) 90%,
-        $white 100%
-      );
-      z-index: 1;
-    }
 
     & > img {
       object-fit: cover;
