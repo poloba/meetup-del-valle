@@ -132,13 +132,14 @@
           <div class="column">
             <h3 class="title">¿Cual es el objetivo de este proyecto?</h3>
             <p>
-              La creación del <b>​primer Valle Digital en España</b> movilizando
-              el máximo de talento, trabajo y dinero hacia la definición y en
+              La creación del
+              <b>primer Valle Digital en España</b> movilizando el máximo de
+              talento, trabajo y dinero hacia la definición y en marcha de
               marcha de varios proyectos que lo hagan realidad en 2020/21.
             </p>
           </div>
           <div class="column">
-            <h3 class="title">​Este es el reto</h3>
+            <h3 class="title">Este El reto</h3>
             <p>
               Conseguir que la comarca de
               <b>la Sierra de la Demanda</b> reconquiste su futuro. Pensando a
