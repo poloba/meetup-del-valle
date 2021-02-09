@@ -266,13 +266,12 @@ export default class NavBar extends Vue {
 nav {
   .navbar-item {
     a.button.is-primary {
-       background-color: #FFD728;
+      background-color: #ffd728;
 
-       &:hover {
-         color: #000;
-         background-color: #ffd000;
-       }
-     }
+      &:hover {
+        color: #000;
+        background-color: #ffd000;
+      }
     }
 
     svg {

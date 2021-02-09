@@ -557,7 +557,7 @@ main > div > .container {
   align-items: center;
   margin: 1.5rem auto;
 
-  h3.subtitle {+
+  h3.subtitle {
     margin-left: 7px;
   }
   h2 {
