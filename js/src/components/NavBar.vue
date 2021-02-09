@@ -265,8 +265,14 @@ export default class NavBar extends Vue {
 <style lang="scss" scoped>
 nav {
   .navbar-item {
-    a.button {
-      font-weight: bold;
+    a.button.is-primary {
+       background-color: #FFD728;
+
+       &:hover {
+         color: #000;
+         background-color: #ffd000;
+       }
+     }
     }
 
     svg {
@@ -282,7 +288,7 @@ nav {
     }
 
     &.is-active {
-      background: $secondary;
+      background: #9157cc;
     }
 
     span.icon.is-medium {
