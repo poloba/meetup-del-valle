@@ -158,7 +158,7 @@
           <a
             class="button is-primary is-large"
             href="https://www.elvalledigital.es"
-            >Conoce más sobre El Valle Digital</a
+            >Conoce El Valle Digital</a
           >
         </div>
       </div>

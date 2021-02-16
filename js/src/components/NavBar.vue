@@ -273,9 +273,9 @@ nav {
         color: #363636 !important;
       }
 
-      &:hover {
-        color: #fff !important;
-        background-color: #28c6ff !important;
+      &:hover,
+      &:focus {
+        background-color: #ffd000 !important;
       }
     }
 
@@ -337,7 +337,13 @@ nav {
     border-color: #fff !important;
   }
 
-  &.navbar.is-secondary .navbar-brand > a.navbar-item:hover {
+  &.navbar.is-secondary .navbar-end .navbar-link:hover,
+  &.navbar.is-secondary .navbar-end .navbar-link:focus {
+    background-color: #00b8fb !important;
+  }
+
+  &.navbar.is-secondary .navbar-brand > a.navbar-item:hover,
+  &.navbar.is-secondary .navbar-brand > a.navbar-item:focus {
     background-color: #00b8fb !important;
   }
 

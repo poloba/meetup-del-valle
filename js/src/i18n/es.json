@@ -598,7 +598,7 @@
   "Post a reply": "Publica una respuesta",
   "Postal Code": "Código postal",
   "Posts": "Publicaciones",
-  "Powered by {mobilizon}. © 2018 - {date} The Mobilizon Contributors - Made with the financial support of {contributors}.": "Desarrollado por el Vive el Valle y {mobilizon}. © 2018 - {date} The Mobilizon Contributors - Hecho con el apoyo financiero de {contributors}.",
+  "Powered by {mobilizon}. © 2018 - {date} The Mobilizon Contributors - Made with the financial support of {contributors}.": "Desarrollado por Vive el Valle y {mobilizon}. © {date} The Mobilizon Contributors {contributors}.",
   "Preferences": "Preferencias",
   "Previous": "Anterior",
   "Previous page": "Pagina anterior",

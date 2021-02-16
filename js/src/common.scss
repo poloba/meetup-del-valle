@@ -21,7 +21,7 @@ a.out,
 // }
 
 .section {
-  padding: 1rem 1% 4rem;
+  padding: 1rem 4% 4rem;
 }
 
 //figure img.is-rounded {
@@ -138,4 +138,20 @@ a.list-item {
     text-transform: uppercase;
     font-size: 1.25rem;
   }
+}
+
+// Override library styles
+
+.navbar.is-secondary .navbar-burger {
+  color: #fff !important;
+}
+
+.navbar.is-secondary .navbar-end .navbar-link:hover,
+.navbar.is-secondary .navbar-end .navbar-link:focus {
+  background-color: #00b8fb !important;
+}
+
+.navbar.is-secondary .navbar-end .navbar-link:after,
+.navbar.is-secondary .navbar-start .navbar-link:after {
+  border-color: #fff !important;
 }

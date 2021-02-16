@@ -45,7 +45,7 @@ label span.visually-hidden {
 
 input.searchField {
   box-shadow: none;
-  border-color: #b5b5b5;
+  border: 0;
 
   &::placeholder {
     color: gray;

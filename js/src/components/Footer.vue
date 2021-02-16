@@ -104,7 +104,7 @@ export default class Footer extends Vue {
 <style lang="scss" scoped>
 @import "~bulma/sass/utilities/mixins.sass";
 footer.footer {
-  color: $secondary;
+  color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
