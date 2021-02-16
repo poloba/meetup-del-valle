@@ -283,9 +283,18 @@ nav {
       height: 3rem;
     }
   }
+  &.navbar.is-secondary {
+    background-color: #781ed2 !important;
+  }
 
-  .navbar.is-secondary .navbar-start > .navbar-item {
+  &.navbar.is-secondary .navbar-start .navbar-item {
     color: #fff !important;
+
+    &:hover,
+    &:focus {
+      background-color: #943aec !important;
+      color: #fff !important;
+    }
   }
 
   .navbar-dropdown .navbar-item {
@@ -308,10 +317,28 @@ nav {
     }
   }
 
+  .navbar-dropdown .navbar-item {
+    color: #1e7d97 !important;
+  }
+
   .navbar-item.has-dropdown a.navbar-link figure {
     margin-right: 0.75rem;
     display: flex;
     align-items: center;
+  }
+
+  .navbar-item img {
+    max-height: 100%;
+    width: 100%;
+  }
+
+  &.navbar.is-secondary .navbar-end .navbar-link:after,
+  &.navbar.is-secondary .navbar-start .navbar-link:after {
+    border-color: #fff !important;
+  }
+
+  &.navbar.is-secondary .navbar-brand > a.navbar-item:hover {
+    background-color: #943aec !important;
   }
 
   a.navbar-item:focus-within {
