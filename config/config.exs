@@ -13,13 +13,13 @@ config :mobilizon,
 config :mobilizon, Mobilizon.Storage.Repo, types: Mobilizon.Storage.PostgresTypes
 
 config :mobilizon, :instance,
-  name: "My Mobilizon Instance",
-  description: "Change this to a proper description of your instance",
+  name: "Vive el Valle",
+  description: "Crea y organiza eventos dentro de la Sierra de la Demanda",
   hostname: "localhost",
-  registrations_open: false,
+  registrations_open: true,
   registration_email_allowlist: [],
   languages: [],
-  default_language: "en",
+  default_language: "es",
   demo: false,
   repository: Mix.Project.config()[:source_url],
   allow_relay: true,
@@ -32,8 +32,8 @@ config :mobilizon, :instance,
   orphan_upload_grace_period_hours: 48,
   remove_unconfirmed_users: true,
   unconfirmed_user_grace_period_hours: 48,
-  email_from: "noreply@localhost",
-  email_reply_to: "noreply@localhost"
+  email_from: "webmaster@polescolar.es",
+  email_reply_to: "webmaster@polescolar.es"
 
 config :mobilizon, :groups, enabled: true
 
@@ -97,18 +97,20 @@ config :mobilizon, :media_proxy,
 
 config :mobilizon, Mobilizon.Web.Email.Mailer,
   adapter: Bamboo.SMTPAdapter,
-  server: "localhost",
-  hostname: "localhost",
+  server: "ssl0.ovh.net",
+  hostname: "ssl0.ovh.net",
   # usually 25, 465 or 587
-  port: 25,
-  username: nil,
-  password: nil,
+  port: 465,
+  username: "webmaster@polescolar.es",
+  password: "Testing1234",
   # can be `:always` or `:never`
   tls: :if_available,
   allowed_tls_versions: [:tlsv1, :"tlsv1.1", :"tlsv1.2"],
   retries: 1,
   # can be `true`
-  no_mx_lookups: false
+  no_mx_lookups: false,
+  # can be `:always`. If your smtp relay requires authentication set it to `:always`.
+  auth: :if_available
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -190,7 +192,7 @@ config :http_signatures,
 
 config :mobilizon, :cldr,
   locales: [
-    "fr",
+    "es",
     "en"
   ]
 

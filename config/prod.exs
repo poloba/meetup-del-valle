@@ -16,26 +16,17 @@ config :logger, level: :info
 # Load all locales in production
 config :mobilizon, :cldr,
   locales: [
-    "ar",
-    "be",
     "ca",
-    "cs",
     "de",
     "en",
     "es",
-    "fi",
     "fr",
     "gl",
-    "hu",
     "it",
-    "ja",
     "nl",
-    "nn",
-    "oc",
     "pl",
     "pt",
-    "ru",
-    "sv"
+    "ru"
   ]
 
 cond do

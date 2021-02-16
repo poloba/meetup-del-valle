@@ -274,8 +274,8 @@ nav {
       }
 
       &:hover {
-        color: #000 !important;
-        background-color: #ffd000 !important;
+        color: #fff !important;
+        background-color: #28c6ff !important;
       }
     }
 
@@ -284,7 +284,7 @@ nav {
     }
   }
   &.navbar.is-secondary {
-    background-color: #781ed2 !important;
+    background-color: #28c6ff !important;
   }
 
   &.navbar.is-secondary .navbar-start .navbar-item {
@@ -292,7 +292,7 @@ nav {
 
     &:hover,
     &:focus {
-      background-color: #943aec !important;
+      background-color: #00b8fb !important;
       color: #fff !important;
     }
   }
@@ -338,11 +338,15 @@ nav {
   }
 
   &.navbar.is-secondary .navbar-brand > a.navbar-item:hover {
-    background-color: #943aec !important;
+    background-color: #00b8fb !important;
   }
 
   a.navbar-item:focus-within {
     background-color: inherit;
+  }
+
+  & .input.searchField {
+    border: 0 !important;
   }
 }
 </style>
