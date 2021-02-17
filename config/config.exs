@@ -300,8 +300,12 @@ config :mobilizon, :rich_media,
   ]
 
 config :mobilizon, Mobilizon.Service.ResourceProviders,
-  types: [],
-  providers: %{}
+  types: [pad: :etherpad, calc: :ethercalc, visio: :jitsi],
+  providers: %{
+    etherpad: "https://etherpad.wikimedia.org/p/",
+    ethercalc: "https://ethercalc.net/",
+    jitsi: "https://meet.jit.si/"
+  }
 
 config :mobilizon, :external_resource_providers, %{
   "https://drive.google.com/" => :google_drive,
