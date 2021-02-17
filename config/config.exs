@@ -96,12 +96,12 @@ config :mobilizon, :media_proxy,
 
 config :mobilizon, Mobilizon.Web.Email.Mailer,
   adapter: Bamboo.SMTPAdapter,
-  server: "ssl0.ovh.net",
-  hostname: "ssl0.ovh.net",
+  server: "${SMTP_SERVER}",
+  hostname: "${SMTP_HOSTNAME}",
   # usually 25, 465 or 587
   port: 465,
-  username: "webmaster@polescolar.es",
-  password: "Testing1234",
+  username: "${SMTP_USERNAME}",
+  password: "${SMTP_PASSWORD}",
   # can be `:always` or `:never`
   tls: :if_available,
   allowed_tls_versions: [:tlsv1, :"tlsv1.1", :"tlsv1.2"],
@@ -140,9 +140,20 @@ config :mobilizon,
 
 config :ueberauth,
        Ueberauth,
-       providers: []
+       providers: [
+         google: {Ueberauth.Strategy.Google, [default_scope: "email"]},
+         facebook: {Ueberauth.Strategy.Facebook, []}
+       ]
 
-config :mobilizon, :auth, oauth_consumer_strategies: []
+config :mobilizon, :auth, oauth_consumer_strategies: [:google, :facebook]
+
+config :ueberauth, Ueberauth.Strategy.Google.OAuth,
+  client_id: "${GOOGLE_0AUTH_ID}",
+  client_secret: "${GOOGLE_0AUTH_SECRET}"
+
+config :ueberauth, Ueberauth.Strategy.Facebook.OAuth,
+  client_id: "${FACEBOOK_0AUTH_ID}",
+  client_secret: "${FACEBOOK_0AUTH_SECRET}"
 
 config :geolix,
   databases: [

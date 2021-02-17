@@ -50,6 +50,13 @@
         <div>
           <!--                  <b-icon icon="mastodon" size="is-large" type="is-primary" />-->
 
+          <a
+            :href="whatsAppShareUrl"
+            target="_blank"
+            rel="nofollow noopener"
+            data-action="share/whatsapp/share"
+            ><b-icon icon="whatsapp" size="is-large" type="is-primary"
+          /></a>
           <a :href="twitterShareUrl" target="_blank" rel="nofollow noopener"
             ><b-icon icon="twitter" size="is-large" type="is-primary"
           /></a>
@@ -131,6 +138,10 @@ export default class ShareEventModal extends Vue {
     return `https://share.diasporafoundation.org/?title=${encodeURIComponent(
       this.event.title
     )}&url=${encodeURIComponent(this.event.url)}`;
+  }
+
+  get whatsAppShareUrl(): string {
+    return `whatsapp://send?text=${this.event.title} - Unete al evento: ${this.event.url}`;
   }
 
   copyURL(): void {
