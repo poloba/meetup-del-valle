@@ -38,6 +38,5 @@ cond do
     import_config "prod.secret.exs"
 
   true ->
-    require Logger
-    Logger.error("No configuration file found")
+    :ok
 end
