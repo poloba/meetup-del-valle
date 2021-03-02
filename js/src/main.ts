@@ -13,6 +13,22 @@ import filters from "./filters";
 import { i18n } from "./utils/i18n";
 import apolloProvider from "./vue-apollo";
 import "./registerServiceWorker";
+import * as Sentry from "@sentry/vue";
+import { Integrations } from "@sentry/tracing";
+
+Sentry.init({
+  Vue,
+  dsn:
+    "https://ed56c16f828b4ebc902161c8a7a4520f@o532627.ingest.sentry.io/5651904",
+  integrations: [new Integrations.BrowserTracing()],
+
+  // We recommend adjusting this value in production, or using tracesSampler
+  // for finer control
+  tracesSampleRate: 1.0,
+  tracingOptions: {
+    trackComponents: true,
+  },
+});
 
 Vue.config.productionTip = false;
 
