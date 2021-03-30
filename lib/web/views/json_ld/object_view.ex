@@ -43,7 +43,7 @@ defmodule Mobilizon.Web.JsonLD.ObjectView do
           do: [
             event.picture.file.url
           ],
-          else: ["#{Endpoint.url()}/img/mobilizon_default_card.png"]
+          else: ["#{Endpoint.url()}/img/viveelvalle_default_card.png"]
         )
     }
 

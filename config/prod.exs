@@ -5,13 +5,13 @@ config :mobilizon, Mobilizon.Web.Endpoint,
     port: 4000
   ],
   url: [
-    host: "mobilizon.local",
+    host: "vive.elvalledigital.es",
     scheme: "https",
     port: 443
   ]
 
 # Do not print debug messages in production
-config :logger, level: :info
+# config :logger, level: :info
 
 # Load all locales in production
 config :mobilizon, :cldr,

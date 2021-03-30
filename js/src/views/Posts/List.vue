@@ -131,7 +131,7 @@ const POSTS_PAGE_LIMIT = 10;
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       title: this.$t("My groups") as string,
-      titleTemplate: "%s | Mobilizon",
+      titleTemplate: "%s | Vive El Valle - Reúne ⋅ Organiza ⋅ Moviliza",
     };
   },
 })

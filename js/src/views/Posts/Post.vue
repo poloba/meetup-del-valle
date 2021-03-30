@@ -115,7 +115,9 @@ import Tag from "../../components/Tag.vue";
       // all titles will be injected into this template
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      titleTemplate: this.post ? "%s | Mobilizon" : "Mobilizon",
+      titleTemplate: this.post
+        ? "%s | Vive El Valle - Reúne ⋅ Organiza ⋅ Moviliza"
+        : "Mobilizon",
     };
   },
 })

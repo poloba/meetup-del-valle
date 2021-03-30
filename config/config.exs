@@ -23,7 +23,7 @@ config :mobilizon, :instance,
   demo: false,
   repository: Mix.Project.config()[:source_url],
   allow_relay: true,
-  federating: true,
+  federating: false,
   remote_limit: 100_000,
   upload_limit: 10_000_000,
   avatar_upload_limit: 2_000_000,
@@ -32,8 +32,8 @@ config :mobilizon, :instance,
   orphan_upload_grace_period_hours: 48,
   remove_unconfirmed_users: true,
   unconfirmed_user_grace_period_hours: 48,
-  email_from: "webmaster@polescolar.es",
-  email_reply_to: "webmaster@polescolar.es"
+  email_from: "vive@elvalledigital.es",
+  email_reply_to: "vive@elvalledigital.es"
 
 config :mobilizon, :groups, enabled: true
 
@@ -94,23 +94,6 @@ config :mobilizon, :media_proxy,
     ]
   ]
 
-config :mobilizon, Mobilizon.Web.Email.Mailer,
-  adapter: Bamboo.SMTPAdapter,
-  server: "${SMTP_SERVER}",
-  hostname: "${SMTP_HOSTNAME}",
-  # usually 25, 465 or 587
-  port: 465,
-  username: "${SMTP_USERNAME}",
-  password: "${SMTP_PASSWORD}",
-  # can be `:always` or `:never`
-  tls: :if_available,
-  allowed_tls_versions: [:tlsv1, :"tlsv1.1", :"tlsv1.2"],
-  retries: 1,
-  # can be `true`
-  no_mx_lookups: false,
-  # can be `:always`. If your smtp relay requires authentication set it to `:always`.
-  auth: :if_available
-
 # Configures Elixir's Logger
 config :logger, :console,
   backends: [:console, Sentry.LoggerBackend],
@@ -140,20 +123,26 @@ config :mobilizon,
 
 config :ueberauth,
        Ueberauth,
-       providers: [
-         google: {Ueberauth.Strategy.Google, [default_scope: "email"]},
-         facebook: {Ueberauth.Strategy.Facebook, []}
-       ]
+       providers: []
 
-config :mobilizon, :auth, oauth_consumer_strategies: [:google, :facebook]
+config :mobilizon, :auth, oauth_consumer_strategies: []
 
-config :ueberauth, Ueberauth.Strategy.Google.OAuth,
-  client_id: "${GOOGLE_0AUTH_ID}",
-  client_secret: "${GOOGLE_0AUTH_SECRET}"
+# config :ueberauth,
+#       Ueberauth,
+#       providers: [
+#         google: {Ueberauth.Strategy.Google, [default_scope: "email"]},
+#         facebook: {Ueberauth.Strategy.Facebook, []}
+#       ]
 
-config :ueberauth, Ueberauth.Strategy.Facebook.OAuth,
-  client_id: "${FACEBOOK_0AUTH_ID}",
-  client_secret: "${FACEBOOK_0AUTH_SECRET}"
+# config :mobilizon, :auth, oauth_consumer_strategies: [:google, :facebook]
+
+# config :ueberauth, Ueberauth.Strategy.Google.OAuth,
+#  client_id: "${GOOGLE_0AUTH_ID}",
+#  client_secret: "${GOOGLE_0AUTH_SECRET}"
+
+# config :ueberauth, Ueberauth.Strategy.Facebook.OAuth,
+#  client_id: "${FACEBOOK_0AUTH_ID}",
+#  client_secret: "${FACEBOOK_0AUTH_SECRET}"
 
 config :geolix,
   databases: [

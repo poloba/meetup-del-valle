@@ -133,27 +133,25 @@
       <div class="container section">
         <div class="columns">
           <div class="column">
-            <h3 class="title">¿Cual es el objetivo de este proyecto?</h3>
+            <h3 class="title">¿Cuál es el objetivo de este proyecto?</h3>
             <p>
-              La creación del
-              <b>primer Valle Digital en España</b> movilizando el máximo de
-              talento, trabajo y dinero hacia la definición y en marcha de
-              marcha de varios proyectos que lo hagan realidad en 2020/21.
+              Reunir en una sola la web la programación de actividades de todo
+              tipo que se desarrollan en nuestra comarca
             </p>
           </div>
           <div class="column">
-            <h3 class="title">Este El reto</h3>
+            <h3 class="title">¿Cuál es el reto</h3>
             <p>
-              Conseguir que la comarca de
-              <b>la Sierra de la Demanda</b> reconquiste su futuro. Pensando a
-              lo grande...
+              Que todo el mundo nos ayude a volcar en esta web todos eventos que
+              se celebran en las más de 130 localidades que abarca El Valle
+              Digital
             </p>
           </div>
           <div class="column">
-            <h3 class="title">Objetivos claves</h3>
+            <h3 class="title">¿Cómo puedo colaborar?</h3>
             <p>
-              La participación de toda la comarca hacia un objetivo ilusionante,
-              un espacio de encuentro donde las cosas siempre avanzan...
+              Te animamos a que te registres. Después podrás apuntarte a los
+              eventos que aparecen en la plataforma ya y crear nuevos.
             </p>
           </div>
         </div>
@@ -244,7 +242,10 @@
         </div>
       </section>
       <!-- Events close to you -->
-      <section class="events-close" v-if="closeEvents.total > 0">
+      <section
+        class="events-close"
+        v-if="closeEvents.total > 0 && loggedUser.settings.location"
+      >
         <h2 class="is-size-2 has-text-weight-bold">
           {{ $t("Close events") }}
         </h2>
@@ -404,7 +405,7 @@ import Subtitle from "../components/Utils/Subtitle.vue";
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       title: this.instanceName,
-      titleTemplate: "%s | Mobilizon",
+      titleTemplate: "%s | Vive El Valle - Reúne ⋅ Organiza ⋅ Moviliza",
     };
   },
 })

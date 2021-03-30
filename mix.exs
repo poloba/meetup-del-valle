@@ -25,9 +25,9 @@ defmodule Mobilizon.Mixfile do
         "vcr.check": :test,
         "vcr.show": :test
       ],
-      name: "Mobilizon",
-      source_url: "https://framagit.org/framasoft/mobilizon",
-      homepage_url: "https://joinmobilizon.org",
+      name: "Vive el Valle",
+      source_url: "https://github.com/poloba/meetup-del-valle",
+      homepage_url: "https://vive.elvalledigital.es",
       docs: docs(),
       releases: [
         mobilizon: [

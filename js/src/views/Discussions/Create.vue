@@ -51,7 +51,7 @@ import RouteName from "../../router/name";
       // @ts-ignore
       title: this.$t("Create a discussion") as string,
       // all titles will be injected into this template
-      titleTemplate: "%s | Mobilizon",
+      titleTemplate: "%s | Vive El Valle - Reúne ⋅ Organiza ⋅ Moviliza",
     };
   },
 })

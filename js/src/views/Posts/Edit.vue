@@ -178,7 +178,7 @@ import PictureUpload from "../../components/PictureUpload.vue";
         ? (this.$t("Edit post") as string)
         : (this.$t("Add a new post") as string),
       // all titles will be injected into this template
-      titleTemplate: "%s | Mobilizon",
+      titleTemplate: "%s | Vive El Valle - Reúne ⋅ Organiza ⋅ Moviliza",
     };
   },
 })

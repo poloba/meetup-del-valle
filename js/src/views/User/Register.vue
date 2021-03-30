@@ -206,7 +206,7 @@ import AuthProviders from "../../components/User/AuthProviders.vue";
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       title: this.title,
-      titleTemplate: "%s | Mobilizon",
+      titleTemplate: "%s | Vive El Valle - Reúne ⋅ Organiza ⋅ Moviliza",
     };
   },
   apollo: {

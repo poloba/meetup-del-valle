@@ -522,7 +522,7 @@ import ReportModal from "../../components/Report/ReportModal.vue";
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       title: this.groupTitle,
-      titleTemplate: "%s | Mobilizon",
+      titleTemplate: "%s | Vive El Valle - Reúne ⋅ Organiza ⋅ Moviliza",
       meta: [
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore

@@ -13,12 +13,12 @@
       body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
       table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
       img { -ms-interpolation-mode: bicubic; }
-      
+
       /* RESET STYLES */
       img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
       table { border-collapse: collapse !important; }
       body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
-      
+
       /* iOS BLUE LINKS */
       a[x-apple-data-detectors] {
           color: inherit !important;
@@ -28,7 +28,7 @@
           font-weight: inherit !important;
           line-height: inherit !important;
       }
-      
+
       /* MOBILE STYLES */
       @media screen and (max-width:600px){
           h1 {
@@ -36,7 +36,7 @@
               line-height: 32px !important;
           }
       }
-      
+
       /* ANDROID CENTER FIX */
       div[style*="margin: 16px 0;"] { margin: 0 !important; }
     </style>
@@ -45,7 +45,7 @@
     <table border="0" cellpadding="0" cellspacing="0" width="100%">
       <!-- LOGO -->
       <tr>
-        <td bgcolor="#474467" align="center">
+        <td bgcolor="#28c6ff" align="center">
           <!--[if (gte mso 9)|(IE)]>
             <table align="center" border="0" cellspacing="0" cellpadding="0" width="600">
               <tr>
@@ -55,7 +55,7 @@
             <tr>
               <td align="center" valign="top" style="padding: 40px 10px 40px 10px;">
                 <a href="<%= Mobilizon.Web.Endpoint.url() %>" target="_blank">
-                  <img alt="<%= Mobilizon.Config.instance_name() %>" src="<%= "#{Mobilizon.Web.Endpoint.url()}/img/mobilizon_logo.png" %>" width="366" height="108" style="display: block; width: 366px; max-width: 366px; min-width: 366px; font-family: 'Roboto', Helvetica, Arial, sans-serif; color: #ffffff; font-size: 18px;" border="0">
+                  <img alt="<%= Mobilizon.Config.instance_name() %>" src="<%= "#{Mobilizon.Web.Endpoint.url()}/img/viveelvalle_logo.png" %>" width="366" height="108" style="display: block; width: 366px; max-width: 366px; min-width: 366px; font-family: 'Roboto', Helvetica, Arial, sans-serif; color: #ffffff; font-size: 18px;" border="0">
                 </a>
               </td>
             </tr>
@@ -98,34 +98,6 @@
           </td>
         </tr>
       <% end %>
-      <!-- SUPPORT CALLOUT -->
-      <tr>
-        <td bgcolor="#ECEBF2" align="center" style="padding: 30px 10px 0px 10px;">
-          <!--[if (gte mso 9)|(IE)]>
-            <table align="center" border="0" cellspacing="0" cellpadding="0" width="600">
-              <tr>
-                <td align="center" valign="top" width="600">
-          <![endif]-->
-          <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;" >
-            <!-- HEADLINE -->
-            <tr>
-              <td bgcolor="#757199" align="center" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #3A384C; font-family: 'Roboto', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;" >
-                <h2 style="font-size: 20px; font-weight: 400; color: #3A384C; margin: 0;">
-                  <%= gettext "Need help? Is something not working as expected?" %>
-                </h2>
-                <p style="margin: 0;"><a href="https://framacolibri.org/c/mobilizon/test-mobilizon" target="_blank" style="color: #474467;">
-                    <%= gettext "Ask the community on Framacolibri" %>
-                  </a></p>
-              </td>
-            </tr>
-          </table>
-          <!--[if (gte mso 9)|(IE)]>
-          </td>
-        </tr>
-      </table>
-          <![endif]-->
-        </td>
-      </tr>
       <!-- FOOTER -->
       <tr>
         <td bgcolor="#ECEBF2" align="center" style="padding: 0px 10px 0px 10px;">
@@ -140,7 +112,6 @@
               <td bgcolor="#ECEBF2" align="center" style="padding: 30px 30px 30px 30px; color: #474467; font-family: 'Roboto', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;" >
                 <p style="margin: 0;">
                   <%= gettext("<b>%{instance}</b> is powered by Mobilizon.", instance: @instance[:name]) |> raw %>
-                  <a href="https://joinmobilizon.org"><%= gettext "Learn more about Mobilizon here!" %></a>
                 </p>
               </td>
             </tr>

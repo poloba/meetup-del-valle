@@ -7,7 +7,9 @@
       <figure
         class="image is-16by9"
         :style="`background-image: url('${
-          event.picture ? event.picture.url : '/img/mobilizon_default_card.png'
+          event.picture
+            ? event.picture.url
+            : '/img/viveelvalle_default_card.png'
         }')`"
       >
         <div

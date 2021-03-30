@@ -740,7 +740,7 @@ import { IParticipant } from "../../types/participant.model";
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       title: this.eventTitle,
-      titleTemplate: "%s | Mobilizon",
+      titleTemplate: "%s | Vive El Valle - Reúne ⋅ Organiza ⋅ Moviliza",
       meta: [
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -1302,7 +1302,7 @@ export default class Event extends EventMixin {
 }
 
 .header-picture-default {
-  background-image: url("/img/mobilizon_default_card.png");
+  background-image: url("/img/viveelvalle_default_card.png");
 }
 
 div.sidebar {

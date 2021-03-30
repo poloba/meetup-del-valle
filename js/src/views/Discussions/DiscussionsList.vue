@@ -126,7 +126,7 @@ import EmptyContent from "@/components/Utils/EmptyContent.vue";
       // @ts-ignore
       title: this.$t("Discussions") as string,
       // all titles will be injected into this template
-      titleTemplate: "%s | Mobilizon",
+      titleTemplate: "%s | Vive El Valle - Reúne ⋅ Organiza ⋅ Moviliza",
     };
   },
 })

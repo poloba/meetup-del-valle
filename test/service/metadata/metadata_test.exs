@@ -98,7 +98,7 @@ defmodule Mobilizon.Service.MetadataTest do
                }\" rel=\"canonical\"><meta content=\"summary_large_image\" property=\"twitter:card\"><script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@type\":\"Event\",\"description\":\"#{
                  String.replace(event.description, a, b)
                }\",\"endDate\":\"#{DateTime.to_iso8601(event.ends_on)}\",\"eventStatus\":\"https://schema.org/EventScheduled\",\"image\":[\"#{
-                 "#{Endpoint.url()}/img/mobilizon_default_card.png"
+                 "#{Endpoint.url()}/img/viveelvalle_default_card.png"
                }\"],\"location\":{\"@type\":\"Place\",\"address\":{\"@type\":\"PostalAddress\",\"addressCountry\":\"My Country\",\"addressLocality\":\"My Locality\",\"addressRegion\":\"My Region\",\"postalCode\":\"My Postal Code\",\"streetAddress\":\"My Street Address\"},\"name\":\"#{
                  event.physical_address.description
                }\"},\"name\":\"#{event.title}\",\"organizer\":{\"@type\":\"Person\",\"name\":\"#{

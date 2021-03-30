@@ -105,7 +105,7 @@ import RouteName from "../../router/name";
   metaInfo() {
     return {
       title: this.$t("My groups") as string,
-      titleTemplate: "%s | Mobilizon",
+      titleTemplate: "%s | Vive El Valle - Reúne ⋅ Organiza ⋅ Moviliza",
     };
   },
 })

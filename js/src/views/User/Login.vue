@@ -157,7 +157,7 @@ import AuthProviders from "../../components/User/AuthProviders.vue";
   metaInfo() {
     return {
       title: this.$t("Login on Mobilizon!") as string,
-      titleTemplate: "%s | Mobilizon",
+      titleTemplate: "%s | Vive El Valle - Reúne ⋅ Organiza ⋅ Moviliza",
     };
   },
 })

@@ -144,7 +144,7 @@ import RelayMixin from "../../mixins/relay";
   metaInfo() {
     return {
       title: this.$t("Followings") as string,
-      titleTemplate: "%s | Mobilizon",
+      titleTemplate: "%s | Vive El Valle - Reúne ⋅ Organiza ⋅ Moviliza",
     };
   },
 })

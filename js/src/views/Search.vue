@@ -260,7 +260,7 @@ const GROUP_PAGE_LIMIT = 10;
   metaInfo() {
     return {
       title: this.$t("Explore events") as string,
-      titleTemplate: "%s | Mobilizon",
+      titleTemplate: "%s | Vive El Valle - Reúne ⋅ Organiza ⋅ Moviliza",
     };
   },
 })

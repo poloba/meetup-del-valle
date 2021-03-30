@@ -144,7 +144,7 @@ type IActivitySkeleton = IActivity | { skeleton: string };
         // @ts-ignore
         group: this.group?.name,
       }) as string,
-      titleTemplate: "%s | Mobilizon",
+      titleTemplate: "%s | Vive El Valle - Reúne ⋅ Organiza ⋅ Moviliza",
     };
   },
 })

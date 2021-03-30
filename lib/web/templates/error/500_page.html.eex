@@ -19,13 +19,13 @@
         justify-content: center;
         align-items: center;
       }
-      
+
       body.error .dialog h1 {
         font-size: 20px;
         line-height: 28px;
         font-weight: 400;
       }
-      
+
       body.error .dialog img {
         display: block;
         max-width: 470px;
@@ -38,7 +38,7 @@
   <body class="error">
     <main role="main" class="dialog">
       <div class="error_illustration">
-        <img src="/img/mobilizon_logo.png" />
+        <img src="/img/viveelvalle_logo.png" />
         <!-- <img src="/img/error.png" alt="" width="500" /> -->
       </div>
       <div class="error__message">

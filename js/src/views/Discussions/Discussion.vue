@@ -193,7 +193,7 @@ import { IComment } from "../../types/comment.model";
       // @ts-ignore
       title: this.discussion.title,
       // all titles will be injected into this template
-      titleTemplate: "%s | Mobilizon",
+      titleTemplate: "%s | Vive El Valle - Reúne ⋅ Organiza ⋅ Moviliza",
     };
   },
 })
