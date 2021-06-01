@@ -56,14 +56,10 @@ defmodule Mobilizon.Service.RichMedia.Favicon do
 
   @spec format_url(String.t(), String.t()) :: String.t()
   defp format_url(url, path) do
-    image_uri = URI.parse(path)
-    uri = URI.parse(url)
-
-    cond do
-      is_nil(image_uri.host) -> "#{uri.scheme}://#{uri.host}#{path}"
-      is_nil(image_uri.scheme) -> "#{uri.scheme}:#{path}"
-      true -> path
-    end
+    url
+    |> URI.parse()
+    |> URI.merge(path)
+    |> to_string()
   end
 
   @spec find_favicon_link_tag(String.t()) :: {:ok, tuple()} | {:error, any()}

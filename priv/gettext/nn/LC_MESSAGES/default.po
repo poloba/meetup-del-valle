@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-02 22:03+0000\n"
-"PO-Revision-Date: 2020-11-14 11:53+0000\n"
+"PO-Revision-Date: 2021-04-14 19:15+0000\n"
 "Last-Translator: Eivind Ødegård <eivind.odegard@sogn.no>\n"
 "Language-Team: Norwegian Nynorsk <https://weblate.framasoft.org/projects/"
 "mobilizon/backend/nn/>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.1\n"
+"X-Generator: Weblate 4.5.1\n"
 
 #, elixir-format
 #: lib/web/templates/email/password_reset.html.eex:48
@@ -1009,8 +1009,8 @@ msgstr ""
 "på %{host} er endra frå denne til:"
 
 #, elixir-format
-#: lib/web/templates/email/email_changed_old.html.eex:41
-#: lib/web/templates/email/email_changed_old.html.eex:65 lib/web/templates/email/email_changed_old.text.eex:5
+#: lib/web/templates/email/email_changed_old.html.eex:62
+#: lib/web/templates/email/email_changed_old.text.eex:5
 msgid "If you did not trigger this change yourself, it is likely that someone has gained access to your %{host} account. Please log in and change your password immediately. If you cannot login, contact the admin on %{host}."
 msgstr ""
 "Viss du ikkje gjorde denne endringa sjølv, er det sannsynleg at nokon har "
@@ -1637,17 +1637,12 @@ msgid "There have been changes for <b>%{title}</b> so we'd thought we'd let you 
 msgstr "<b>%{title}</b> har vorte endra, så me tenkte du ville vita det."
 
 #, elixir-format
-#: lib/web/templates/error/500_page.html.eex:46
-msgid "The Mobilizon server seems to be temporarily down."
-msgstr "Mobilizon-tenaren ser ut til å vera nede i augeblinken."
-
-#, elixir-format
 #: lib/web/templates/error/500_page.html.eex:7
 msgid "This page is not correct"
 msgstr "Denne sida er feil"
 
 #, elixir-format
-#: lib/web/templates/error/500_page.html.eex:45
+#: lib/web/templates/error/500_page.html.eex:50
 msgid "We're sorry, but something went wrong on our end."
 msgstr "Orsak, det skjedde noko feil hjå oss."
 
@@ -1659,20 +1654,49 @@ msgstr "Dette er ei demoside for å prøva ut Mobilizon."
 
 #, elixir-format
 #: lib/service/metadata/actor.ex:53 lib/service/metadata/actor.ex:60
+#: lib/service/metadata/instance.ex:54 lib/service/metadata/instance.ex:60
 msgid "%{name}'s feed"
-msgstr ""
+msgstr "Straumen til %{name}"
 
 #, elixir-format
-#: lib/service/export/feed.ex:77
+#: lib/service/export/feed.ex:120
 msgid "%{actor}'s private events feed on %{instance}"
-msgstr ""
+msgstr "Den private hendingsstraumen til %{actor} på %{instance}"
 
 #, elixir-format
-#: lib/service/export/feed.ex:72
+#: lib/service/export/feed.ex:115
 msgid "%{actor}'s public events feed on %{instance}"
-msgstr ""
+msgstr "Den offentlege hendingsstraumen til %{actor} på %{instance}"
 
 #, elixir-format
-#: lib/service/export/feed.ex:203
+#: lib/service/export/feed.ex:220
 msgid "Feed for %{email} on %{instance}"
+msgstr "Straum for %{email} på %{instance}"
+
+#, elixir-format
+#: lib/web/templates/error/500_page.html.eex:57
+msgid "If the issue persists, you may contact the server administrator at %{contact}."
+msgstr ""
+"Viss feilen held fram, kan du kontakta styraren for denne tenaren på "
+"%{contact}."
+
+#, elixir-format
+#: lib/web/templates/error/500_page.html.eex:55
+msgid "If the issue persists, you may try to contact the server administrator."
+msgstr ""
+"Viss feilen held fram, kan du prøva å kontakta styraren på denne tenaren."
+
+#, elixir-format
+#: lib/web/templates/error/500_page.html.eex:68
+msgid "Technical details"
+msgstr "Tekniske opplysingar"
+
+#, elixir-format
+#: lib/web/templates/error/500_page.html.eex:52
+msgid "The Mobilizon server %{instance} seems to be temporarily down."
+msgstr "Mobilizon-tenaren ser ut til å vera nede i augeblinken."
+
+#, elixir-format
+#: lib/service/export/feed.ex:73
+msgid "Public feed for %{instance}"
 msgstr ""

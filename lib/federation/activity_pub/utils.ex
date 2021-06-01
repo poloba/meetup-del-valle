@@ -14,6 +14,7 @@ defmodule Mobilizon.Federation.ActivityPub.Utils do
 
   alias Mobilizon.Federation.ActivityPub
   alias Mobilizon.Federation.ActivityPub.{Activity, Federator, Relay}
+  alias Mobilizon.Federation.ActivityPub.Actor, as: ActivityPubActor
   alias Mobilizon.Federation.ActivityPub.Types.Ownable
   alias Mobilizon.Federation.ActivityStream.Converter
   alias Mobilizon.Federation.HTTPSignatures
@@ -26,7 +27,7 @@ defmodule Mobilizon.Federation.ActivityPub.Utils do
   # Some implementations send the actor URI as the actor field, others send the entire actor object,
   # so figure out what the actor's URI is based on what we have.
   def get_url(%{"id" => id}), do: id
-  def get_url(id) when is_bitstring(id), do: id
+  def get_url(id) when is_binary(id), do: id
   def get_url(ids) when is_list(ids), do: get_url(hd(ids))
   def get_url(_), do: nil
 
@@ -175,7 +176,7 @@ defmodule Mobilizon.Federation.ActivityPub.Utils do
   @spec remote_actors(list(String.t())) :: list(Actor.t())
   def remote_actors(recipients) do
     recipients
-    |> Enum.map(fn url -> ActivityPub.get_or_fetch_actor_by_url(url) end)
+    |> Enum.map(fn url -> ActivityPubActor.get_or_fetch_actor_by_url(url) end)
     |> Enum.map(fn {status, actor} ->
       case status do
         :ok ->
@@ -223,7 +224,7 @@ defmodule Mobilizon.Federation.ActivityPub.Utils do
     end
   end
 
-  def get_actor(%{"actor" => %{"id" => id}}) when is_bitstring(id) do
+  def get_actor(%{"actor" => %{"id" => id}}) when is_binary(id) do
     id
   end
 
@@ -259,7 +260,9 @@ defmodule Mobilizon.Federation.ActivityPub.Utils do
     are_same_origin?(id, actor)
   end
 
-  def origin_check?(_id, %{"type" => type} = _params) when type in ["Actor", "Group"], do: true
+  def origin_check?(id, %{"type" => type, "id" => actor_id} = _params)
+      when type in ["Actor", "Person", "Group"],
+      do: id == actor_id
 
   def origin_check?(_id, %{"actor" => nil} = _args), do: false
 
@@ -421,7 +424,13 @@ defmodule Mobilizon.Federation.ActivityPub.Utils do
          ["https://www.w3.org/ns/activitystreams#Public"]}
       else
         if actor_type == :Group do
-          {[actor.followers_url, actor.members_url], []}
+          to =
+            (object["to"] || [])
+            |> MapSet.new()
+            |> MapSet.intersection(MapSet.new([actor.followers_url, actor.members_url]))
+            |> MapSet.to_list()
+
+          {to, []}
         else
           {[actor.followers_url], []}
         end
@@ -693,6 +702,44 @@ defmodule Mobilizon.Federation.ActivityPub.Utils do
       end
     else
       true
+    end
+  end
+
+  @spec label_in_collection?(any(), any()) :: boolean()
+  defp label_in_collection?(url, coll) when is_binary(coll), do: url == coll
+  defp label_in_collection?(url, coll) when is_list(coll), do: url in coll
+  defp label_in_collection?(_, _), do: false
+
+  @spec label_in_message?(String.t(), map()) :: boolean()
+  def label_in_message?(label, params),
+    do:
+      [params["to"], params["cc"], params["bto"], params["bcc"]]
+      |> Enum.any?(&label_in_collection?(label, &1))
+
+  @spec unaddressed_message?(map()) :: boolean()
+  def unaddressed_message?(params),
+    do:
+      [params["to"], params["cc"], params["bto"], params["bcc"]]
+      |> Enum.all?(&is_nil(&1))
+
+  @spec recipient_in_message(Actor.t(), Actor.t(), map()) :: boolean()
+  def recipient_in_message(%Actor{url: url} = _recipient, %Actor{} = _actor, params),
+    do: label_in_message?(url, params) || unaddressed_message?(params)
+
+  defp extract_list(target) when is_binary(target), do: [target]
+  defp extract_list(lst) when is_list(lst), do: lst
+  defp extract_list(_), do: []
+
+  def maybe_splice_recipient(url, params) do
+    need_splice? =
+      !label_in_collection?(url, params["to"]) &&
+        !label_in_collection?(url, params["cc"])
+
+    if need_splice? do
+      cc_list = extract_list(params["cc"])
+      Map.put(params, "cc", [url | cc_list])
+    else
+      params
     end
   end
 end

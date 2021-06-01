@@ -4,6 +4,372 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.1.4 - 19-05-2021
+
+### Fixes
+
+- Fixes rich media parsers, so that some resource links work again
+- Fixes some depreciated calls that were removed in OTP24
+- Fixes groups not being refreshed after joining a group
+- Fixes the notice that is shown when joining a group that the content may not be available right away - because the group is remote - being shown everytime, even when the group is local
+- Fixes OGP image not being defined for posts
+
+### Translations
+
+- French
+- Galician
+- Italian
+
+## 1.1.3 - 03-05-2021
+
+### Changed
+
+- Lower the frequency for refreshment of external groups
+
+### Fixes
+
+- Fixed spaces being eaten in the rich text editor (event description, comments and public posts)
+- Fixed event physical address display
+- Fixed tags being limited to 20 characters
+- Fixed some ActivityPub errors
+
+### Translations
+
+- Galician
+- Russian
+- Spanish
+
+## 1.1.2 - 28-04-2021
+
+### Changed
+
+- Added an unique index on the addresses url
+- Added org.opencontainers.image.source annotation to the Docker image 
+- Improved the moderation action logs interface
+
+### Fixes
+
+- **Fixed some invalid email headers**
+- **Fixed and repaired default profile still pointing on deleted profile**
+- Fixed some ActivityPub issues and improve error handling
+- Fixed a duplicate sentence in the email changed html template
+- Fixed resource metadata remote image URL
+- Fixed not only remote groups being refreshed after the acceptation of an invite
+- Fixed an UI overflow on the organizer metadata block if the organizer remote username is too long
+
+### Translations
+
+- Italian
+- German
+- Slovenian
+- Russian
+
+## 1.1.1 - 22-04-2021
+
+### Changed
+
+- Allow to remove user location setting and location information on an event or group
+- Instance level feeds are now shown on the instance About page, and are exposed as `rel=alternate` links, if instance level feeds are activated in the config
+- Webfinger module now queries the host-meta XRD endpoint to detect the webfinger well-known endpoint
+- Instance maximum upload sizes are now exposed in the API
+- Improve handling of media files which are too heavy
+- Improve details when editing or showing an user through CLI
+- More strict browser compatibility
+- Renamed "Close events" to "Nearby events" ("close" is too close to "closed")
+- Improved Sentry integration
+
+### Fixes
+
+- Fixed accessing a group discussion page without being a member (the page was just broken)
+- Fixed reloading the members list after excluding a member
+- Fixed comments being closed under an event message when not connected
+- Fixed path issue when fetching favicon for resources
+- Fixed content type and size missing for profile avatars
+- Fixed HTTP clients user-agent not using runtime configuration
+- Fixed the `support` folder not being copied into releases
+- Fixed the participation button position when text is too long or in some cases
+- Fixed the incorrect CSP configuration
+- Fixed discussions being sent to followers instead of members
+- Fixed showing broken public UI for deleted/suspended group
+- Fixed warning when getting out of creating/editing an unsaved event that was broken for some languages
+- Fixed addresses being not trimmed in the iCalendar exports
+- Fixed editing an user's email in CLI
+- Fixed suspended actors being refreshed
+
+
+### Translations
+
+- Gaelic
+- German
+- Kabyle (New!)
+- Norwegian
+- Russian
+- Slovenian
+- Spanish
+
+## 1.1.0 - 31-03-2021
+
+This version introduces a new way to install and host Mobilizon : Elixir releases. This is the new default way of installing Mobilizon. Please read [UPGRADE.md](./UPGRADE.md#upgrading-from-10-to-11) for details on how to migrate to Elixir binary releases or stay on source install.
+
+### Added
+
+- **Add a group activity logbook**
+- **Possibility for user to define a location in their settings to get close events**
+- **Support for Elixir releases and runtime.exs, allowing to change configuration without recompiling**
+- Support for Sentry
+- Added support for custom plural rules on front-end (only Gaelic supported for now)
+- Added possibility to bookmark search by location through geohash
+- Add ENV parameter to allow Docker users to specify the IP which Mobilizon listens on
+- Add instance-wide ICS & Atom feeds of public events (disabled by default)
+- Add user and profile secret (tokened) feeds
+- Runit configuration files
+
+### Changed
+
+- Prune done background jobs
+- Improved search form
+- Improved backend error page
+- Added a confirmation step before deleting a conversation
+- The default configuration for Mobilizon now listens only on the local interface
+- Creating an event from the group page configures the event creation interface with the group as organizer
+- Only provide executables for unix
+
+### Removed
+
+- Support for Elixir versions < 1.11
+
+### Fixes
+
+- Fixed editing a group discussion
+- Fixed accessing terms and privacy pages
+- Fixed refreshing only groups which are stale
+- Fixed success message when validating group follower
+- Fixed formatted dates using system locale instead of browser/Mobilizon's locale
+- Fixed federating draft status
+- Fixed group draft posts being sent to followers
+- Fixed detecting membership status on group page
+- Fixed admin language selection
+- Fixed geospatial configuration only being evaluated at compile-time, not at runtime
+- Handle ActivityPub Fetcher returning text that's not JSON
+- Fix accessing a group profile when not a member
+- Fixed accessing the homepage with no location setting defined
+- Fixed location field not showing in preferences if setting not already set
+- Fixed lasts events published order on the homepage
+- Fixed a typo in range/radius showing the wrong radius for close events on homepage
+- Fixed hashtags disappearing from content
+- Fixed close events order
+- Fixed group posts edition
+- Fixed validating new email with bad token
+- Fixed `.well-known/host-meta` not being accessible with correct `Accept` header
+- Fixed posts default publish date overriding remote ones
+- Fixed getting a page description in some cases when creating a resource
+- Fixed getting metadata from tweets when creating a resource
+- Fixed bad handling of duplicate usernames
+- Fixed handling of bad URIs to proxify
+- Fixed creating discussion with title containing only spaces 
+- Fixed registering new user account with same email as unconfirmed
+- Fixed handling changing default actor unlogged
+- Fixed handling getting organized events from an actor when not authorized
+- Fixed empty comments being allowed
+- Fixed the number of group followers per page
+- Fixed issue when selecting a location in your settings
+- Fixed group feeds not showing when you are a member of the group
+- Fixed handling feeds with unknown format
+- Fixed a couple of issues when viewing a remote group
+- Fixed issues with the attributed organizer when creating an event
+- Fixed HTML entities not being decoded in icalendar exports and feeds
+- Fixed instance follows being auto-approved
+- Fixed parsing the IP from the MOBILIZON_INSTANCE_LISTEN_IP env variable for Docker
+- Fixed release startup in Docker container
+
+### Translations
+
+- Arabic
+- Belarusian
+- Bengali
+- Catalan
+- Chinese (Traditional)
+- English
+- French
+- Gaelic **New!**
+- Galician
+- German
+- Hungarian
+- Italian
+- Occitan
+- Polish
+- Portuguese (Brazil)
+- Russian
+- Slovenian
+- Spanish
+
+## 1.1.0-rc.3 - 30-03-2021
+
+### Changed
+
+- Only provide executables for unix
+
+### Fixed
+
+- Fixed parsing the IP from the MOBILIZON_INSTANCE_LISTEN_IP env variable for Docker
+- Fixed release startup in Docker container
+
+## 1.1.0-rc.2 - 30-03-2021
+
+### Added
+
+- Runit configuration files
+
+### Fixed
+
+- Fixed the number of group followers per page
+- Fixed issue when selecting a location in your settings
+- Fixed group feeds not showing when you are a member of the group
+- Fixed handling feeds with unknown format
+- Fixed a couple of issues when viewing a remote group
+- Fixed issues with the attributed organizer when creating an event
+- Fixed HTML entities not being decoded in icalendar exports and feeds
+- Fixed instance follows being auto-approved
+
+### Translations
+
+- Galician
+- German
+- Hungarian
+- Russian
+- Spanish
+## 1.1.0-rc.1 - 29-03-2021
+
+### Added
+
+- Add ENV parameter to allow Docker users to specify the IP which Mobilizon listens on
+- Add instance-wide ICS & Atom feeds of public events (disabled by default)
+- Add user and profile secret (tokened) feeds
+
+### Changed
+
+- The default configuration for Mobilizon now listens only on the local interface
+- Creating an event from the group page configures the event creation interface with the group as organizer
+
+### Fixed
+
+- Fixed hashtags disappearing from content
+- Fixed close events order
+- Fixed group posts edition
+- Fixed validating new email with bad token
+- Fixed `.well-known/host-meta` not being accessible with correct `Accept` header
+- Fixed posts default publish date overriding remote ones
+- Fixed getting a page description in some cases when creating a resource
+- Fixed getting metadata from tweets when creating a resource
+- Fixed bad handling of duplicate usernames
+- Fixed handling of bad URIs to proxify
+- Fixed creating discussion with title containing only spaces 
+- Fixed registering new user account with same email as unconfirmed
+- Fixed handling changing default actor unlogged
+- Fixed handling getting organized events from an actor when not authorized
+- Fixed empty comments being allowed
+
+### Translations
+
+- Gaelic
+- Galician
+- German
+- Hungarian
+- Italian
+- Polish
+- Portuguese (Brazil)
+- Russian
+- Slovenian
+- Spanish
+
+## 1.1.0-beta.6 - 17-03-2021
+
+### Fixed
+- Fixed a typo in range/radius showing the wrong radius for close events on homepage
+
+## 1.1.0-beta.5 - 17-03-2021
+
+### Fixed
+- Fixed a typo in range/radius preventing close events from showing up
+
+## 1.1.0-beta.4 - 17-03-2021
+
+### Fixed
+
+- Fixed accessing the homepage with no location setting defined
+- Fixed location field not showing in preferences if setting not already set
+- Fixed lasts events published order on the homepage
+
+## 1.1.0-beta.3 - 16-03-2021
+
+### Fixed
+- Handle ActivityPub Fetcher returning text that's not JSON
+- Fix accessing a group profile when not a member
+
+## 1.1.0-beta.2 - 16-03-2021
+
+### Fixed
+- Fixed geospatial configuration only being evaluated at compile-time, not at runtime
+
+### Translations
+- Slovenian
+
+## 1.1.0-beta.1 - 10-03-2021
+
+This version introduces a new way to install and host Mobilizon : Elixir releases. This is the new default way of installing Mobilizon. Please read [UPGRADE.md](./UPGRADE.md#upgrading-from-10-to-11) for details on how to migrate to Elixir binary releases or stay on source install.
+
+### Added
+
+- **Add a group activity logbook**
+- **Possibility for user to define a location in their settings to get close events**
+- **Support for Elixir releases and runtime.exs, allowing to change configuration without recompiling**
+- Support for Sentry
+- Added support for custom plural rules on front-end (only Gaelic supported for now)
+- Added possibility to bookmark search by location through geohash
+
+### Changed
+
+- Prune done background jobs
+- Improved search form
+- Improved backend error page
+- Added a confirmation step before deleting a conversation
+
+### Removed
+
+- Support for Elixir versions < 1.11
+
+### Fixes
+
+- Fixed editing a group discussion
+- Fixed accessing terms and privacy pages
+- Fixed refreshing only groups which are stale
+- Fixed success message when validating group follower
+- Fixed formatted dates using system locale instead of browser/Mobilizon's locale
+- Fixed federating draft status
+- Fixed group draft posts being sent to followers
+- Fixed detecting membership status on group page
+- Fixed admin language selection
+
+### Translations
+
+- Arabic
+- Belarusian
+- Bengali
+- Catalan
+- Chinese (Traditional)
+- English
+- French
+- Gaelic
+- Galician
+- German
+- Hungarian
+- Italian
+- Occitan
+- Portuguese (Brazil)
+- Slovenian
+- Spanish
+- Russian
+
 ## 1.0.7 - 27-02-2021
 
 ### Fixed

@@ -36,11 +36,10 @@ defmodule Mobilizon.Admin do
   @doc """
   Returns the list of action logs.
   """
-  @spec list_action_logs(integer | nil, integer | nil) :: [ActionLog.t()]
+  @spec list_action_logs(integer | nil, integer | nil) :: Page.t()
   def list_action_logs(page \\ nil, limit \\ nil) do
     list_action_logs_query()
-    |> Page.paginate(page, limit)
-    |> Repo.all()
+    |> Page.build_page(page, limit)
   end
 
   @doc """
@@ -78,7 +77,7 @@ defmodule Mobilizon.Admin do
   defp stringify_struct(struct), do: struct
 
   def get_admin_setting_value(group, name, fallback \\ nil)
-      when is_bitstring(group) and is_bitstring(name) do
+      when is_binary(group) and is_binary(name) do
     case Repo.get_by(Setting, group: group, name: name) do
       nil ->
         fallback

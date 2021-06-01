@@ -10,7 +10,7 @@ defmodule Mobilizon.Federation.ActivityStream.Converter.Utils do
   alias Mobilizon.Mention
   alias Mobilizon.Storage.Repo
 
-  alias Mobilizon.Federation.ActivityPub
+  alias Mobilizon.Federation.ActivityPub.Actor, as: ActivityPubActor
   alias Mobilizon.Federation.ActivityStream.Converter.Media, as: MediaConverter
 
   alias Mobilizon.Web.Endpoint
@@ -94,7 +94,7 @@ defmodule Mobilizon.Federation.ActivityStream.Converter.Utils do
     end
   end
 
-  defp fetch_tag(tag) when is_bitstring(tag), do: [tag_without_hash(tag)]
+  defp fetch_tag(tag) when is_binary(tag), do: [tag_without_hash(tag)]
 
   defp tag_without_hash("#" <> tag_title), do: tag_title
   defp tag_without_hash(tag_title), do: tag_title
@@ -114,7 +114,8 @@ defmodule Mobilizon.Federation.ActivityStream.Converter.Utils do
   @spec create_mention(map(), list()) :: list()
   defp create_mention(mention, acc) when is_map(mention) do
     with true <- mention["type"] == "Mention",
-         {:ok, %Actor{id: actor_id}} <- ActivityPub.get_or_fetch_actor_by_url(mention["href"]) do
+         {:ok, %Actor{id: actor_id}} <-
+           ActivityPubActor.get_or_fetch_actor_by_url(mention["href"]) do
       acc ++ [%{actor_id: actor_id}]
     else
       _err ->
@@ -169,7 +170,7 @@ defmodule Mobilizon.Federation.ActivityStream.Converter.Utils do
   @spec fetch_actor(String.t()) :: Actor.t()
   defp fetch_actor(actor_url) do
     with {:ok, %Actor{suspended: false} = actor} <-
-           ActivityPub.get_or_fetch_actor_by_url(actor_url) do
+           ActivityPubActor.get_or_fetch_actor_by_url(actor_url) do
       actor
     end
   end

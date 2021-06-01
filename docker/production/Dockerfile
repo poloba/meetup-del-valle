@@ -1,7 +1,7 @@
 # First build the application assets
-FROM node:14-alpine as assets
+FROM node:16-alpine as assets
 
-RUN apk add --no-cache python build-base libwebp-tools bash imagemagick ncurses
+RUN apk add --no-cache python3 build-base libwebp-tools bash imagemagick ncurses
 
 COPY js .
 RUN yarn install \
@@ -20,8 +20,10 @@ RUN mix local.hex --force \
 
 COPY lib ./lib
 COPY priv ./priv
-COPY config/config.exs config/prod.exs config/releases.exs ./config/
+COPY config/config.exs config/prod.exs ./config/
+COPY config/docker.exs ./config/runtime.exs
 COPY rel ./rel
+COPY support ./support
 COPY --from=assets ./priv/static ./priv/static
 
 RUN mix phx.digest \
@@ -32,14 +34,13 @@ FROM alpine
 
 ARG BUILD_DATE
 ARG VCS_REF
-ARG CI_COMMIT_TAG
-ARG MOBILIZON_VERSION=${CI_COMMIT_TAG}
 
 LABEL org.opencontainers.image.title="mobilizon" \
     org.opencontainers.image.description="Mobilizon for Docker" \
     org.opencontainers.image.vendor="joinmobilizon.org" \
     org.opencontainers.image.documentation="https://docs.joinmobilizon.org" \
     org.opencontainers.image.licenses="AGPL-3.0" \
+    org.opencontainers.image.source="https://framagit.org/framasoft/mobilizon" \
     org.opencontainers.image.url="https://joinmobilizon.org" \
     org.opencontainers.image.revision=$VCS_REF \
     org.opencontainers.image.created=$BUILD_DATE
@@ -55,6 +56,7 @@ EXPOSE 4000
 ENV MOBILIZON_DOCKER=true
 
 COPY --from=builder --chown=nobody:nobody _build/prod/rel/mobilizon ./
+RUN cp /releases/*/runtime.exs /etc/mobilizon/config.exs
 COPY docker/production/docker-entrypoint.sh ./
 
 ENTRYPOINT ["./docker-entrypoint.sh"]

@@ -6,13 +6,14 @@ defmodule Mobilizon.GraphQL.Resolvers.Person do
   import Mobilizon.Users.Guards
 
   alias Mobilizon.{Actors, Events, Users}
-  alias Mobilizon.Actors.Actor
+  alias Mobilizon.Actors.{Actor, Member}
   alias Mobilizon.Events.Participant
-  alias Mobilizon.Storage.Page
+  alias Mobilizon.Storage.{Page, Repo}
   alias Mobilizon.Users.User
   import Mobilizon.Web.Gettext
 
   alias Mobilizon.Federation.ActivityPub
+  alias Mobilizon.Federation.ActivityPub.Actor, as: ActivityPubActor
   require Logger
 
   alias Mobilizon.Web.Upload
@@ -39,7 +40,7 @@ defmodule Mobilizon.GraphQL.Resolvers.Person do
         context: %{current_user: %User{} = user}
       }) do
     with {:ok, %Actor{id: actor_id} = actor} <-
-           ActivityPub.find_or_make_actor_from_nickname(preferred_username),
+           ActivityPubActor.find_or_make_actor_from_nickname(preferred_username),
          {:own, {:is_owned, _}} <- {:own, User.owns_actor(user, actor_id)} do
       {:ok, actor}
     else
@@ -124,6 +125,9 @@ defmodule Mobilizon.GraphQL.Resolvers.Person do
          {:ok, %Actor{} = new_person} <- Actors.new_person(args) do
       {:ok, new_person}
     else
+      {:error, err} ->
+        {:error, err}
+
       {:picture, {:error, :file_too_large}} ->
         {:error, dgettext("errors", "The provided picture is too heavy")}
     end
@@ -222,9 +226,9 @@ defmodule Mobilizon.GraphQL.Resolvers.Person do
   end
 
   defp save_picture(media, key) do
-    with {:ok, %{name: name, url: url, content_type: content_type, size: _size}} <-
+    with {:ok, %{name: name, url: url, content_type: content_type, size: size}} <-
            Upload.store(media.file, type: key, description: media.alt) do
-      %{"name" => name, "url" => url, "mediaType" => content_type}
+      %{"name" => name, "url" => url, "content_type" => content_type, "size" => size}
     end
   end
 
@@ -232,7 +236,8 @@ defmodule Mobilizon.GraphQL.Resolvers.Person do
   This function is used to register a person afterwards the user has been created (but not activated)
   """
   def register_person(_parent, args, _resolution) do
-    with {:ok, %User{} = user} <- Users.get_user_by_email(args.email),
+    # When registering, email is assumed confirmed (unlike changing email)
+    with {:ok, %User{} = user} <- Users.get_user_by_email(args.email, unconfirmed: false),
          user_actor <- Users.get_actor_for_user(user),
          no_actor <- is_nil(user_actor),
          {:no_actor, true} <- {:no_actor, no_actor},
@@ -306,10 +311,36 @@ defmodule Mobilizon.GraphQL.Resolvers.Person do
   @doc """
   Returns the list of events this person is going to
   """
-  def person_memberships(%Actor{id: actor_id}, _args, %{context: %{current_user: user}}) do
+  @spec person_memberships(Actor.t(), map(), map()) :: {:ok, Page.t()} | {:error, String.t()}
+  def person_memberships(%Actor{id: actor_id}, %{group: group}, %{
+        context: %{current_user: user}
+      }) do
+    with {:is_owned, %Actor{id: actor_id}} <- User.owns_actor(user, actor_id),
+         {:group, %Actor{id: group_id}} <- {:group, Actors.get_actor_by_name(group, :Group)},
+         {:ok, %Member{} = membership} <- Actors.get_member(actor_id, group_id),
+         memberships <- %Page{
+           total: 1,
+           elements: [Repo.preload(membership, [:actor, :parent, :invited_by])]
+         } do
+      {:ok, memberships}
+    else
+      {:error, :member_not_found} ->
+        {:ok, %Page{total: 0, elements: []}}
+
+      {:group, nil} ->
+        {:error, :group_not_found}
+
+      {:is_owned, nil} ->
+        {:error, dgettext("errors", "Profile is not owned by authenticated user")}
+    end
+  end
+
+  def person_memberships(%Actor{id: actor_id}, %{page: page, limit: limit}, %{
+        context: %{current_user: user}
+      }) do
     with {:is_owned, %Actor{} = actor} <- User.owns_actor(user, actor_id),
-         participations <- Actors.list_members_for_actor(actor) do
-      {:ok, participations}
+         memberships <- Actors.list_members_for_actor(actor, page, limit) do
+      {:ok, memberships}
     else
       {:is_owned, nil} ->
         {:error, dgettext("errors", "Profile is not owned by authenticated user")}
@@ -341,9 +372,13 @@ defmodule Mobilizon.GraphQL.Resolvers.Person do
           context: %{current_user: %User{id: user_id, role: role}}
         }
       ) do
-    with true <- actor_user_id == user_id or is_moderator(role),
+    with {:can_get_events, true} <-
+           {:can_get_events, actor_user_id == user_id or is_moderator(role)},
          %Page{} = page <- Events.list_organized_events_for_actor(actor, page, limit) do
       {:ok, page}
+    else
+      {:can_get_events, false} ->
+        {:error, :unauthorized}
     end
   end
 

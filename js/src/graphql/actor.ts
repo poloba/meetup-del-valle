@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 
 export const FETCH_PERSON = gql`
-  query($username: String!) {
+  query ($username: String!) {
     fetchPerson(preferredUsername: $username) {
       id
       url
@@ -37,7 +37,7 @@ export const FETCH_PERSON = gql`
 `;
 
 export const GET_PERSON = gql`
-  query(
+  query (
     $actorId: ID!
     $organizedEventsPage: Int
     $organizedEventsLimit: Int
@@ -319,6 +319,7 @@ export const LOGGED_USER_MEMBERSHIPS = gql`
             preferredUsername
             domain
             name
+            type
             avatar {
               id
               url
@@ -359,6 +360,7 @@ export const IDENTITIES = gql`
         id
         url
       }
+      type
       preferredUsername
       name
     }
@@ -370,6 +372,39 @@ export const PERSON_MEMBERSHIPS = gql`
     person(id: $id) {
       id
       memberships {
+        total
+        elements {
+          id
+          role
+          parent {
+            id
+            preferredUsername
+            name
+            domain
+            type
+            avatar {
+              id
+              url
+            }
+          }
+          invitedBy {
+            id
+            preferredUsername
+            name
+          }
+          insertedAt
+          updatedAt
+        }
+      }
+    }
+  }
+`;
+
+export const PERSON_MEMBERSHIP_GROUP = gql`
+  query PersonMembershipGroup($id: ID!, $group: String!) {
+    person(id: $id) {
+      id
+      memberships(group: $group) {
         total
         elements {
           id
@@ -397,9 +432,9 @@ export const PERSON_MEMBERSHIPS = gql`
   }
 `;
 
-export const PERSON_MEMBERSHIPS_WITH_MEMBERS = gql`
-  query PersonMembershipsWithMembers($id: ID!) {
-    person(id: $id) {
+export const GROUP_MEMBERSHIP_SUBSCRIPTION_CHANGED = gql`
+  subscription ($actorId: ID!, $group: String!) {
+    groupMembershipChanged(personId: $actorId, group: $group) {
       id
       memberships {
         total
@@ -414,23 +449,6 @@ export const PERSON_MEMBERSHIPS_WITH_MEMBERS = gql`
             avatar {
               id
               url
-            }
-            members {
-              total
-              elements {
-                id
-                role
-                actor {
-                  id
-                  preferredUsername
-                  name
-                  domain
-                  avatar {
-                    id
-                    url
-                  }
-                }
-              }
             }
           }
           invitedBy {
@@ -504,7 +522,7 @@ export const DELETE_PERSON = gql`
  * Prefer CREATE_PERSON when creating another identity
  */
 export const REGISTER_PERSON = gql`
-  mutation(
+  mutation (
     $preferredUsername: String!
     $name: String!
     $summary: String!

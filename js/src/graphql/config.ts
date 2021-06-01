@@ -67,6 +67,7 @@ export const CONFIG = gql`
       features {
         groups
         eventCreation
+        koenaConnect
       }
       auth {
         ldap
@@ -74,6 +75,14 @@ export const CONFIG = gql`
           id
           label
         }
+      }
+      uploadLimits {
+        default
+        avatar
+        banner
+      }
+      instanceFeeds {
+        enabled
       }
     }
   }
@@ -108,6 +117,9 @@ export const ABOUT = gql`
       }
       version
       federating
+      instanceFeeds {
+        enabled
+      }
     }
   }
 `;

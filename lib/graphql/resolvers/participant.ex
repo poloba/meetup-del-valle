@@ -70,7 +70,7 @@ defmodule Mobilizon.GraphQL.Resolvers.Participant do
           participant,
           Map.get(args, :locale, "en")
         )
-        |> Email.Mailer.deliver_later()
+        |> Email.Mailer.send_email_later()
       end
 
       {:ok, participant}
@@ -231,7 +231,7 @@ defmodule Mobilizon.GraphQL.Resolvers.Participant do
 
       {:actor_approve_permission, _} ->
         {:error,
-         dgettext("errors", "Provided moderator profile doesn't have permission on this event")}
+         dgettext("errors", "Provided profile doesn't have moderator permissions on this event")}
 
       {:same_role, true} ->
         {:error, dgettext("errors", "Participant already has role %{role}", role: new_role)}
@@ -264,7 +264,7 @@ defmodule Mobilizon.GraphQL.Resolvers.Participant do
   @spec valid_email?(String.t() | nil) :: boolean
   defp valid_email?(email) when is_nil(email), do: false
 
-  defp valid_email?(email) when is_bitstring(email) do
+  defp valid_email?(email) when is_binary(email) do
     email
     |> String.trim()
     |> Checker.valid?()

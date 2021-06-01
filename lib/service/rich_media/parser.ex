@@ -19,6 +19,7 @@ defmodule Mobilizon.Service.RichMedia.Parser do
   alias Mobilizon.Config
   alias Mobilizon.Service.HTTP.RichMediaPreviewClient
   alias Mobilizon.Service.RichMedia.Favicon
+  alias Mobilizon.Service.RichMedia.Parsers.Fallback
   alias Plug.Conn.Utils
   require Logger
 
@@ -57,7 +58,7 @@ defmodule Mobilizon.Service.RichMedia.Parser do
 
   @spec parse_url(String.t(), Enum.t()) :: {:ok, map()} | {:error, any()}
   defp parse_url(url, options \\ []) do
-    user_agent = Keyword.get(options, :user_agent, Config.instance_user_agent())
+    user_agent = Keyword.get(options, :user_agent, default_user_agent(url))
     headers = [{"User-Agent", user_agent}]
     Logger.debug("Fetching content at address #{inspect(url)}")
 
@@ -73,12 +74,11 @@ defmodule Mobilizon.Service.RichMedia.Parser do
            {:is_html, _response_headers, true} <-
              {:is_html, response_headers, is_html(response_headers)} do
         body
-        |> parse_html()
         |> maybe_parse()
         |> Map.put(:url, url)
         |> maybe_add_favicon()
         |> clean_parsed_data()
-        |> check_parsed_data()
+        |> check_parsed_data(body)
         |> check_remote_picture_path()
       else
         {:is_html, response_headers, false} ->
@@ -192,8 +192,7 @@ defmodule Mobilizon.Service.RichMedia.Parser do
     end
   end
 
-  defp parse_html(html), do: Floki.parse_document!(html)
-
+  @spec maybe_parse(String.t()) :: {:halt, map()} | {:cont, map()}
   defp maybe_parse(html) do
     Enum.reduce_while(parsers(), %{}, fn parser, acc ->
       case parser.parse(html, acc) do
@@ -206,13 +205,24 @@ defmodule Mobilizon.Service.RichMedia.Parser do
     end)
   end
 
-  defp check_parsed_data(%{title: title} = data)
+  defp check_parsed_data(data, html, first_run \\ true)
+
+  defp check_parsed_data(%{title: title} = data, _html, _first_run)
        when is_binary(title) and byte_size(title) > 0 do
-    {:ok, data}
+    data
   end
 
-  defp check_parsed_data(data) do
-    {:error, "Found metadata was invalid or incomplete: #{inspect(data)}"}
+  defp check_parsed_data(data, html, first_run) do
+    # Maybe the first data found is incomplete, pass it through the Fallback parser once again
+    if first_run do
+      {:ok, data} = Fallback.parse(html, data)
+      Logger.debug("check parsed data")
+      Logger.debug(inspect(data))
+      check_parsed_data(data, html, false)
+    else
+      Logger.debug("Found metadata was invalid or incomplete: #{inspect(data)}")
+      {:error, :invalid_parsed_data}
+    end
   end
 
   defp clean_parsed_data(data) do
@@ -279,18 +289,31 @@ defmodule Mobilizon.Service.RichMedia.Parser do
   @spec check_remote_picture_path(map()) :: map()
   defp check_remote_picture_path(%{image_remote_url: image_remote_url, url: url} = data) do
     Logger.debug("Checking image_remote_url #{image_remote_url}")
-    image_uri = URI.parse(image_remote_url)
-    uri = URI.parse(url)
 
-    image_remote_url =
-      cond do
-        is_nil(image_uri.host) -> "#{uri.scheme}://#{uri.host}#{image_remote_url}"
-        is_nil(image_uri.scheme) -> "#{uri.scheme}:#{image_remote_url}"
-        true -> image_remote_url
-      end
-
-    Map.put(data, :image_remote_url, image_remote_url)
+    data = Map.put(data, :image_remote_url, format_url(url, image_remote_url))
+    {:ok, data}
   end
 
-  defp check_remote_picture_path(data), do: data
+  defp check_remote_picture_path(data), do: {:ok, data}
+
+  @spec format_url(String.t(), String.t()) :: String.t()
+  defp format_url(url, path) do
+    url
+    |> URI.parse()
+    |> URI.merge(path)
+    |> to_string()
+  end
+
+  # Twitter requires a well-know crawler user-agent to show server-rendered data
+  defp default_user_agent("https://twitter.com/" <> _) do
+    "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
+  end
+
+  defp default_user_agent("https://mobile.twitter.com/" <> _) do
+    "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
+  end
+
+  defp default_user_agent(_url) do
+    Config.instance_user_agent()
+  end
 end

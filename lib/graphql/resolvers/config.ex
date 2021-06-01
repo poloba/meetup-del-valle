@@ -126,7 +126,8 @@ defmodule Mobilizon.GraphQL.Resolvers.Config do
       timezones: Tzdata.zone_list(),
       features: %{
         groups: Config.instance_group_feature_enabled?(),
-        event_creation: Config.instance_event_creation_enabled?()
+        event_creation: Config.instance_event_creation_enabled?(),
+        koena_connect: Config.get([:instance, :koena_connect_link], false)
       },
       rules: Config.instance_rules(),
       version: Config.instance_version(),
@@ -134,6 +135,14 @@ defmodule Mobilizon.GraphQL.Resolvers.Config do
       auth: %{
         ldap: Config.ldap_enabled?(),
         oauth_providers: Config.oauth_consumer_strategies()
+      },
+      upload_limits: %{
+        default: Config.get([:instance, :upload_limit]),
+        avatar: Config.get([:instance, :avatar_upload_limit]),
+        banner: Config.get([:instance, :banner_upload_limit])
+      },
+      instance_feeds: %{
+        enabled: Config.get([:instance, :enable_instance_feeds])
       }
     }
   end

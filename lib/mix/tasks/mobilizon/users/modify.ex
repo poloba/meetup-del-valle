@@ -40,7 +40,7 @@ defmodule Mix.Tasks.Mobilizon.Users.Modify do
     with {:ok, %User{} = user} <- Users.get_user_by_email(email),
          attrs <- %{},
          role <- calculate_role(admin?, moderator?, user?),
-         attrs <- process_new_value(attrs, :mail, new_email, user.email),
+         attrs <- process_new_value(attrs, :email, new_email, user.email),
          attrs <- process_new_value(attrs, :role, role, user.role),
          attrs <-
            if(disable? && !is_nil(user.confirmed_at),
@@ -58,7 +58,11 @@ defmodule Mix.Tasks.Mobilizon.Users.Modify do
       An user has been modified with the following information:
         - email: #{user.email}
         - Role: #{user.role}
-        - Activated: #{if user.confirmed_at, do: user.confirmed_at, else: "False"}
+        - account status: #{
+        if user.confirmed_at,
+          do: "activated on #{DateTime.to_string(user.confirmed_at)} (UTC)",
+          else: "disabled"
+      }
       """)
     else
       {:makes_changes, false} ->

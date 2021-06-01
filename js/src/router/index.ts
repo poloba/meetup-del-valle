@@ -109,7 +109,7 @@ export const routes = [
     path: "/interact",
     name: RouteName.INTERACT,
     component: (): Promise<EsModuleComponent> =>
-      import(/* webpackChunkName: "cookies" */ "@/views/Interact.vue"),
+      import(/* webpackChunkName: "interact" */ "@/views/Interact.vue"),
     meta: { requiredAuth: false },
   },
   {
@@ -158,10 +158,14 @@ const router = new Router({
 
 router.beforeEach(authGuardIfNeeded);
 router.afterEach(() => {
-  if (router.app.$children[0]) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    router.app.$children[0].error = null;
+  try {
+    if (router.app.$children[0]) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      router.app.$children[0].error = null;
+    }
+  } catch (e) {
+    console.error(e);
   }
 });
 

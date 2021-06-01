@@ -31,7 +31,11 @@
         {{ $t("You have been removed from this group's members.") }}
       </b-message>
       <b-message
-        v-if="isCurrentActorAGroupMember && isCurrentActorARecentMember"
+        v-if="
+          isCurrentActorAGroupMember &&
+          isCurrentActorARecentMember &&
+          isCurrentActorOnADifferentDomainThanGroup
+        "
         type="is-info"
       >
         {{
@@ -79,6 +83,49 @@
                 }"
                 >{{ $t("Group settings") }}</b-button
               >
+              <b-dropdown
+                class="menu-dropdown"
+                aria-role="list"
+                v-if="isCurrentActorAGroupMember"
+                position="is-bottom-left"
+              >
+                <b-button
+                  slot="trigger"
+                  outlined
+                  role="button"
+                  icon-right="dots-horizontal"
+                >
+                </b-button>
+                <b-dropdown-item
+                  aria-role="listitem"
+                  v-if="ableToReport"
+                  @click="isReportModalActive = true"
+                >
+                  <span>
+                    {{ $t("Report") }}
+                    <b-icon icon="flag" />
+                  </span>
+                </b-dropdown-item>
+                <hr class="dropdown-divider" />
+                <b-dropdown-item has-link aria-role="listitem">
+                  <a
+                    :href="`@${preferredUsername}/feed/atom`"
+                    :title="$t('Atom feed for events and posts')"
+                  >
+                    {{ $t("RSS/Atom Feed") }}
+                    <b-icon icon="rss" />
+                  </a>
+                </b-dropdown-item>
+                <b-dropdown-item has-link aria-role="listitem">
+                  <a
+                    :href="`@${preferredUsername}/feed/ics`"
+                    :title="$t('ICS feed for events')"
+                  >
+                    {{ $t("ICS/WebCal Feed") }}
+                    <b-icon icon="calendar-sync" />
+                  </a>
+                </b-dropdown-item>
+              </b-dropdown>
             </div>
           </div>
         </div>
@@ -327,6 +374,7 @@
               v-if="isCurrentActorAGroupModerator"
               :to="{
                 name: RouteName.CREATE_EVENT,
+                query: { actorId: group.id },
               }"
               class="button is-primary"
               >{{ $t("+ Create an event") }}</router-link
@@ -455,19 +503,19 @@
           />
         </div>
       </b-modal>
-      <b-modal
-        :active.sync="isReportModalActive"
-        has-modal-card
-        ref="reportModal"
-      >
-        <report-modal
-          :on-confirm="reportGroup"
-          :title="$t('Report this group')"
-          :outside-domain="group.domain"
-          @close="$refs.reportModal.close()"
-        />
-      </b-modal>
     </div>
+    <b-modal
+      :active.sync="isReportModalActive"
+      has-modal-card
+      ref="reportModal"
+    >
+      <report-modal
+        :on-confirm="reportGroup"
+        :title="$t('Report this group')"
+        :outside-domain="group.domain"
+        @close="$refs.reportModal.close()"
+      />
+    </b-modal>
   </div>
 </template>
 
@@ -497,6 +545,7 @@ import { IMember } from "@/types/actor/member.model";
 import RouteName from "../../router/name";
 import GroupSection from "../../components/Group/GroupSection.vue";
 import ReportModal from "../../components/Report/ReportModal.vue";
+import { PERSON_MEMBERSHIP_GROUP } from "@/graphql/actor";
 
 @Component({
   apollo: {
@@ -556,11 +605,24 @@ export default class Group extends mixins(GroupMixin) {
   }
 
   async joinGroup(): Promise<void> {
+    const [group, currentActorId] = [
+      usernameWithDomain(this.group),
+      this.currentActor.id,
+    ];
     this.$apollo.mutate({
       mutation: JOIN_GROUP,
       variables: {
         groupId: this.group.id,
       },
+      refetchQueries: [
+        {
+          query: PERSON_MEMBERSHIP_GROUP,
+          variables: {
+            id: currentActorId,
+            group,
+          },
+        },
+      ],
     });
   }
 
@@ -628,15 +690,14 @@ export default class Group extends mixins(GroupMixin) {
   }
 
   get groupMember(): IMember | undefined {
-    if (!this.person || !this.person.id) return undefined;
-    return this.person.memberships.elements.find(
-      ({ parent: { id } }) => id === this.group.id
-    );
+    if (this.person?.memberships?.total > 0) {
+      return this.person?.memberships?.elements[0];
+    }
+    return undefined;
   }
 
   get groupMemberships(): (string | undefined)[] {
-    if (!this.person || !this.person.id) return [];
-    return this.person.memberships.elements
+    return this.person?.memberships?.elements
       .filter(
         (membership: IMember) =>
           ![
@@ -690,6 +751,10 @@ export default class Group extends mixins(GroupMixin) {
       this.groupMember.role === MemberRole.MEMBER &&
       addMinutes(new Date(`${this.groupMember.updatedAt}Z`), 10) > new Date()
     );
+  }
+
+  get isCurrentActorOnADifferentDomainThanGroup(): boolean {
+    return this.group.domain !== null;
   }
 
   get members(): IMember[] {
