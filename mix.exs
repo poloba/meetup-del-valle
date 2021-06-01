@@ -27,7 +27,7 @@ defmodule Mobilizon.Mixfile do
       ],
       name: "Vive el Valle",
       source_url: "https://github.com/poloba/meetup-del-valle",
-      homepage_url: "https://vive.elvalledigital.es",
+      homepage_url: "https://valle-prepro.pol.ac",
       docs: docs(),
       releases: [
         mobilizon: [
