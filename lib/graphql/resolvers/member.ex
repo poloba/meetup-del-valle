@@ -7,7 +7,7 @@ defmodule Mobilizon.GraphQL.Resolvers.Member do
   alias Mobilizon.{Actors, Users}
   alias Mobilizon.Actors.{Actor, Member}
   alias Mobilizon.Federation.ActivityPub
-  alias Mobilizon.Federation.ActivityPub.Refresher
+  alias Mobilizon.Federation.ActivityPub.Actor, as: ActivityPubActor
   alias Mobilizon.Storage.Page
   alias Mobilizon.Users.User
   import Mobilizon.Web.Gettext
@@ -70,7 +70,7 @@ defmodule Mobilizon.GraphQL.Resolvers.Member do
            target_actor_username |> String.trim() |> String.trim_leading("@"),
          {:target_actor_username, {:ok, %Actor{id: target_actor_id} = target_actor}} <-
            {:target_actor_username,
-            ActivityPub.find_or_make_actor_from_nickname(target_actor_username)},
+            ActivityPubActor.find_or_make_actor_from_nickname(target_actor_username)},
          {:existant, true} <-
            {:existant, check_member_not_existant_or_rejected(target_actor_id, group.id)},
          {:ok, _activity, %Member{} = member} <- ActivityPub.invite(group, actor, target_actor) do
@@ -99,7 +99,7 @@ defmodule Mobilizon.GraphQL.Resolvers.Member do
 
   def accept_invitation(_parent, %{id: member_id}, %{context: %{current_user: %User{} = user}}) do
     with %Actor{id: actor_id} <- Users.get_actor_for_user(user),
-         %Member{actor: %Actor{id: member_actor_id} = actor} = member <-
+         %Member{actor: %Actor{id: member_actor_id}} = member <-
            Actors.get_member(member_id),
          {:is_same_actor, true} <- {:is_same_actor, member_actor_id === actor_id},
          {:ok, _activity, %Member{} = member} <-
@@ -108,8 +108,6 @@ defmodule Mobilizon.GraphQL.Resolvers.Member do
              member,
              true
            ) do
-      # Launch an async task to refresh the group profile, fetch resources, discussions, members
-      Refresher.fetch_group(member.parent.url, actor)
       {:ok, member}
     else
       {:is_same_actor, false} ->

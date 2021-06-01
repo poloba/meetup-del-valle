@@ -63,6 +63,7 @@ defmodule Mobilizon.Addresses.Address do
     |> cast(attrs, @attrs)
     |> set_url()
     |> validate_required(@required_attrs)
+    |> unique_constraint(:url, name: :addresses_url_index)
   end
 
   @spec set_url(Ecto.Changeset.t()) :: Ecto.Changeset.t()
@@ -83,8 +84,10 @@ defmodule Mobilizon.Addresses.Address do
   def representation(nil), do: nil
 
   def representation(%__MODULE__{} = address) do
-    "#{address.street} #{address.postal_code} #{address.locality} #{address.region} #{
-      address.country
-    }"
+    String.trim(
+      "#{address.street} #{address.postal_code} #{address.locality} #{address.region} #{
+        address.country
+      }"
+    )
   end
 end

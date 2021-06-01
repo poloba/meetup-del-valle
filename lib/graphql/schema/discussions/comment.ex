@@ -6,12 +6,12 @@ defmodule Mobilizon.GraphQL.Schema.Discussions.CommentType do
 
   import Absinthe.Resolution.Helpers, only: [dataloader: 1]
 
-  alias Mobilizon.{Actors, Discussions}
+  alias Mobilizon.{Actors, Discussions, Events}
   alias Mobilizon.GraphQL.Resolvers.Comment
 
   @desc "A comment"
   object :comment do
-    interfaces([:action_log_object])
+    interfaces([:action_log_object, :activity_object])
     field(:id, :id, description: "Internal ID for this comment")
     field(:uuid, :uuid, description: "An UUID for this comment")
     field(:url, :string, description: "Comment URL")

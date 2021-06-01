@@ -18,7 +18,7 @@
             }"
             >{{ discussion.actor.name }}</router-link
           >
-          <b-skeleton v-else animated />
+          <b-skeleton v-else-if="$apollo.loading" animated />
         </li>
         <li>
           <router-link
@@ -31,7 +31,7 @@
             }"
             >{{ $t("Discussions") }}</router-link
           >
-          <b-skeleton animated v-else />
+          <b-skeleton animated v-else-if="$apollo.loading" />
         </li>
         <li class="is-active">
           <router-link
@@ -41,6 +41,9 @@
         </li>
       </ul>
     </nav>
+    <b-message v-if="error" type="is-danger">
+      {{ error }}
+    </b-message>
     <section>
       <div class="discussion-title">
         <h2 class="title" v-if="discussion.title && !editTitleMode">
@@ -60,8 +63,16 @@
             <b-icon icon="pencil" />
           </span>
         </h2>
-        <b-skeleton v-else-if="!editTitleMode" height="50px" animated />
-        <form v-else @submit.prevent="updateDiscussion" class="title-edit">
+        <b-skeleton
+          v-else-if="!editTitleMode && $apollo.loading"
+          height="50px"
+          animated
+        />
+        <form
+          v-else-if="!$apollo.loading && !error"
+          @submit.prevent="updateDiscussion"
+          class="title-edit"
+        >
           <b-input :value="discussion.title" v-model="newTitle" />
           <div class="buttons">
             <b-button
@@ -79,7 +90,7 @@
               icon-right="close"
             />
             <b-button
-              @click="deleteConversation"
+              @click="openDeleteDiscussionConfirmation"
               type="is-danger"
               native-type="button"
               icon-left="delete"
@@ -100,7 +111,7 @@
         @click="loadMoreComments"
         >{{ $t("Fetch more") }}</b-button
       >
-      <form @submit.prevent="reply">
+      <form @submit.prevent="reply" v-if="!error">
         <b-field :label="$t('Text')">
           <editor v-model="newComment" />
         </b-field>
@@ -217,6 +228,7 @@ export default class discussion extends mixins(GroupMixin) {
   RouteName = RouteName;
 
   usernameWithDomain = usernameWithDomain;
+  error: string | null = null;
 
   async reply(): Promise<void> {
     if (this.newComment === "") return;
@@ -388,6 +400,19 @@ export default class discussion extends mixins(GroupMixin) {
     this.editTitleMode = false;
   }
 
+  openDeleteDiscussionConfirmation(): void {
+    this.$buefy.dialog.confirm({
+      type: "is-danger",
+      title: this.$t("Delete this discussion") as string,
+      message: this.$t(
+        "Are you sure you want to delete this entire discussion?"
+      ) as string,
+      confirmText: this.$t("Delete discussion") as string,
+      cancelText: this.$t("Cancel") as string,
+      onConfirm: () => this.deleteConversation(),
+    });
+  }
+
   async deleteConversation(): Promise<void> {
     await this.$apollo.mutate({
       mutation: DELETE_DISCUSSION,
@@ -408,6 +433,11 @@ export default class discussion extends mixins(GroupMixin) {
   async handleErrors(errors: GraphQLError[]): Promise<void> {
     if (errors[0].message.includes("No such discussion")) {
       await this.$router.push({ name: RouteName.PAGE_NOT_FOUND });
+    }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (errors[0].code === "unauthorized") {
+      this.error = errors[0].message;
     }
   }
 

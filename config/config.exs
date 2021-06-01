@@ -25,15 +25,18 @@ config :mobilizon, :instance,
   allow_relay: true,
   federating: false,
   remote_limit: 100_000,
-  upload_limit: 10_000_000,
-  avatar_upload_limit: 2_000_000,
-  banner_upload_limit: 4_000_000,
+  upload_limit: 10_485_760,
+  avatar_upload_limit: 2_097_152,
+  banner_upload_limit: 4_194_304,
   remove_orphan_uploads: true,
   orphan_upload_grace_period_hours: 48,
   remove_unconfirmed_users: true,
   unconfirmed_user_grace_period_hours: 48,
   email_from: "vive@elvalledigital.es",
-  email_reply_to: "vive@elvalledigital.es"
+  email_reply_to: "vive@elvalledigital.es",
+  activity_expire_days: 365,
+  activity_keep_number: 100,
+  enable_instance_feeds: false
 
 config :mobilizon, :groups, enabled: true
 
@@ -57,7 +60,8 @@ config :mobilizon, Mobilizon.Web.Endpoint,
 config :mime, :types, %{
   "application/activity+json" => ["activity-json"],
   "application/ld+json" => ["activity-json"],
-  "application/jrd+json" => ["jrd-json"]
+  "application/jrd+json" => ["jrd-json"],
+  "application/xrd+xml" => ["xrd-xml"]
 }
 
 # Upload configuration
@@ -79,7 +83,7 @@ config :mobilizon, Mobilizon.Web.Upload,
     ]
   ]
 
-config :mobilizon, Mobilizon.Web.Upload.Uploader.Local, uploads: "uploads"
+config :mobilizon, Mobilizon.Web.Upload.Uploader.Local, uploads: "/var/lib/mobilizon/uploads"
 
 config :mobilizon, :media_proxy,
   enabled: true,
@@ -149,7 +153,7 @@ config :geolix,
     %{
       id: :city,
       adapter: Geolix.Adapter.MMDB2,
-      source: "priv/data/GeoLite2-City.mmdb"
+      source: "/var/lib/mobilizon/geo/GeoLite2-City.mmdb"
     }
   ]
 
@@ -268,10 +272,11 @@ config :mobilizon, Oban,
     {Oban.Plugins.Cron,
      crontab: [
        {"@hourly", Mobilizon.Service.Workers.BuildSiteMap, queue: :background},
-       {"17 * * * *", Mobilizon.Service.Workers.RefreshGroups, queue: :background},
+       {"17 4 * * *", Mobilizon.Service.Workers.RefreshGroups, queue: :background},
        # To be activated in Mobilizon 1.2
        # {"@hourly", Mobilizon.Service.Workers.CleanOrphanMediaWorker, queue: :background},
-       {"@hourly", Mobilizon.Service.Workers.CleanUnconfirmedUsersWorker, queue: :background}
+       {"@hourly", Mobilizon.Service.Workers.CleanUnconfirmedUsersWorker, queue: :background},
+       {"@daily", Mobilizon.Service.Workers.CleanOldActivityWorker, queue: :background}
      ]},
     {Oban.Plugins.Pruner, max_age: 300}
   ]

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-18 04:49+0000\n"
-"PO-Revision-Date: 2021-01-20 16:18+0000\n"
+"PO-Revision-Date: 2021-05-01 10:59+0000\n"
 "Last-Translator: josé m. <correo@xmgz.eu>\n"
 "Language-Team: Galician <https://weblate.framasoft.org/projects/mobilizon/"
 "backend/gl/>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4\n"
+"X-Generator: Weblate 4.6\n"
 
 #: lib/web/templates/email/password_reset.html.eex:48
 #, elixir-format
@@ -1013,8 +1013,8 @@ msgstr ""
 "Ola! Aquí un aviso para confirmar que o enderezo de email asociado á túa "
 "conta en %{host} cambiouse a:"
 
-#: lib/web/templates/email/email_changed_old.html.eex:41
-#: lib/web/templates/email/email_changed_old.html.eex:65 lib/web/templates/email/email_changed_old.text.eex:5
+#: lib/web/templates/email/email_changed_old.html.eex:62
+#: lib/web/templates/email/email_changed_old.text.eex:5
 #, elixir-format
 msgid "If you did not trigger this change yourself, it is likely that someone has gained access to your %{host} account. Please log in and change your password immediately. If you cannot login, contact the admin on %{host}."
 msgstr ""
@@ -1635,17 +1635,12 @@ msgstr "Título do evento"
 msgid "There have been changes for <b>%{title}</b> so we'd thought we'd let you know."
 msgstr "Houbo cambios en <b>%{title}</b> e cremos que debes sabelo."
 
-#: lib/web/templates/error/500_page.html.eex:46
-#, elixir-format
-msgid "The Mobilizon server seems to be temporarily down."
-msgstr "O servidor Mobilizon semella estar temporalmente fóra de servizo."
-
 #: lib/web/templates/error/500_page.html.eex:7
 #, elixir-format
 msgid "This page is not correct"
 msgstr "Esta páxina non é correcta"
 
-#: lib/web/templates/error/500_page.html.eex:45
+#: lib/web/templates/error/500_page.html.eex:50
 #, elixir-format
 msgid "We're sorry, but something went wrong on our end."
 msgstr "Lamentámolo, pero algo está a fallar pola nosa parte."
@@ -1657,21 +1652,50 @@ msgid "This is a demonstration site to test Mobilizon."
 msgstr "Este é un sitio web de exemplo para probar Mobilizon."
 
 #: lib/service/metadata/actor.ex:53 lib/service/metadata/actor.ex:60
+#: lib/service/metadata/instance.ex:54 lib/service/metadata/instance.ex:60
 #, elixir-format
 msgid "%{name}'s feed"
 msgstr "fonte de %{name}"
 
-#: lib/service/export/feed.ex:77
+#: lib/service/export/feed.ex:120
 #, elixir-format
 msgid "%{actor}'s private events feed on %{instance}"
 msgstr "fonte dos eventos privados de %{actor} en %{instance}"
 
-#: lib/service/export/feed.ex:72
+#: lib/service/export/feed.ex:115
 #, elixir-format
 msgid "%{actor}'s public events feed on %{instance}"
 msgstr "fonte dos eventos públicos de %{actor} en %{instance}"
 
-#: lib/service/export/feed.ex:203
+#: lib/service/export/feed.ex:220
 #, elixir-format
 msgid "Feed for %{email} on %{instance}"
 msgstr "Fonte para %{email} en %{instance}"
+
+#: lib/web/templates/error/500_page.html.eex:57
+#, elixir-format
+msgid "If the issue persists, you may contact the server administrator at %{contact}."
+msgstr ""
+"Se o problema persiste, contacta coa administración do servidor en "
+"%{contact}."
+
+#: lib/web/templates/error/500_page.html.eex:55
+#, elixir-format
+msgid "If the issue persists, you may try to contact the server administrator."
+msgstr "Se o problema persiste, contacta coa administración do servidor."
+
+#: lib/web/templates/error/500_page.html.eex:68
+#, elixir-format
+msgid "Technical details"
+msgstr "Detalles técnicos"
+
+#: lib/web/templates/error/500_page.html.eex:52
+#, elixir-format
+msgid "The Mobilizon server %{instance} seems to be temporarily down."
+msgstr ""
+"O servidor Mobilizon %{instance} semella estar temporalmente fóra de servizo."
+
+#: lib/service/export/feed.ex:73
+#, elixir-format
+msgid "Public feed for %{instance}"
+msgstr "Fonte pública de %{instance}"

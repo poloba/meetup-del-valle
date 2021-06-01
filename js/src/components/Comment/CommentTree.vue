@@ -24,6 +24,9 @@
                 v-model="newComment.text"
               />
             </p>
+            <p class="help is-danger" v-if="emptyCommentError">
+              {{ $t("Comment text can't be empty") }}
+            </p>
           </div>
           <div class="send-comment">
             <b-button
@@ -36,7 +39,7 @@
         </div>
       </article>
     </form>
-    <b-notification v-else :closable="false">{{
+    <b-notification v-else-if="isConnected" :closable="false">{{
       $t("The organiser has chosen to close comments.")
     }}</b-notification>
     <p
@@ -45,8 +48,9 @@
     >
       {{ $t("Loading comments…") }}
     </p>
-    <transition name="comment-empty-list" mode="out-in" v-else>
+    <transition-group name="comment-empty-list" mode="out-in" v-else>
       <transition-group
+        key="list"
         name="comment-list"
         v-if="comments.length"
         class="comment-list"
@@ -62,10 +66,10 @@
           @delete-comment="deleteComment"
         />
       </transition-group>
-      <div v-else-if="isAbleToComment" class="no-comments">
+      <div class="no-comments" key="no-comments">
         <span>{{ $t("No comments yet") }}</span>
       </div>
-    </transition>
+    </transition-group>
   </div>
 </template>
 
@@ -125,12 +129,23 @@ export default class CommentTree extends Vue {
 
   CommentModeration = CommentModeration;
 
+  emptyCommentError = false;
+
   @Watch("currentActor")
   watchCurrentActor(currentActor: IPerson): void {
     this.newComment.actor = currentActor;
   }
 
+  @Watch("newComment", { deep: true })
+  resetEmptyCommentError(newComment: IComment): void {
+    if (this.emptyCommentError) {
+      this.emptyCommentError = ["", "<p></p>"].includes(newComment.text);
+    }
+  }
+
   async createCommentForEvent(comment: IComment): Promise<void> {
+    this.emptyCommentError = ["", "<p></p>"].includes(comment.text);
+    if (this.emptyCommentError) return;
     try {
       if (!comment.actor) return;
       await this.$apollo.mutate({
@@ -216,10 +231,13 @@ export default class CommentTree extends Vue {
 
       // and reset the new comment field
       this.newComment = new CommentModel();
-    } catch (error) {
-      console.error(error);
-      if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-        this.$notifier.error(error.graphQLErrors[0].message);
+    } catch (errors) {
+      console.error(errors);
+      if (errors.graphQLErrors && errors.graphQLErrors.length > 0) {
+        const error = errors.graphQLErrors[0];
+        if (error.field !== "text" && error.message[0] !== "can't be blank") {
+          this.$notifier.error(error.message);
+        }
       }
     }
   }
@@ -333,10 +351,14 @@ export default class CommentTree extends Vue {
   }
 
   get isAbleToComment(): boolean {
-    if (this.currentActor?.id) {
+    if (this.isConnected) {
       return this.areCommentsClosed || this.isEventOrganiser;
     }
     return false;
+  }
+
+  get isConnected(): boolean {
+    return this.currentActor?.id != undefined;
   }
 }
 </script>

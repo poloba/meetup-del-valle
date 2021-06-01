@@ -29,7 +29,7 @@ defmodule Mobilizon.GraphQL.Schema.Actors.GroupType do
   Represents a group of actors
   """
   object :group do
-    interfaces([:actor, :interactable, :activity_object])
+    interfaces([:actor, :interactable, :activity_object, :action_log_object])
 
     field(:id, :id, description: "Internal ID for this group")
     field(:url, :string, description: "The ActivityPub actor's URL")
@@ -153,6 +153,7 @@ defmodule Mobilizon.GraphQL.Schema.Actors.GroupType do
       arg(:limit, :integer, default_value: 10, description: "The limit of activity items per page")
 
       arg(:type, :activity_type, description: "Filter by type of activity")
+      arg(:author, :activity_author, description: "Filter by activity author")
       resolve(&Activity.group_activity/3)
       description("The group activity")
     end

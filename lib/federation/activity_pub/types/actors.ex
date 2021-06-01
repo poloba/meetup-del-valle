@@ -3,7 +3,7 @@ defmodule Mobilizon.Federation.ActivityPub.Types.Actors do
   alias Mobilizon.Actors
   alias Mobilizon.Actors.{Actor, Follower, Member}
   alias Mobilizon.Federation.ActivityPub
-  alias Mobilizon.Federation.ActivityPub.Audience
+  alias Mobilizon.Federation.ActivityPub.{Audience, Relay}
   alias Mobilizon.Federation.ActivityPub.Types.Entity
   alias Mobilizon.Federation.ActivityStream.Convertible
   alias Mobilizon.GraphQL.API.Utils, as: APIUtils
@@ -126,7 +126,9 @@ defmodule Mobilizon.Federation.ActivityPub.Types.Actors do
            }),
          {:ok, _} <-
            Mobilizon.Service.Activity.Member.insert_activity(member, subject: "member_joined"),
-         Absinthe.Subscription.publish(Endpoint, actor, group_membership_changed: actor.id),
+         Absinthe.Subscription.publish(Endpoint, actor,
+           group_membership_changed: [Actor.preferred_username_and_domain(group), actor.id]
+         ),
          join_data <- %{
            "type" => "Join",
            "id" => member.url,
@@ -221,7 +223,10 @@ defmodule Mobilizon.Federation.ActivityPub.Types.Actors do
          %Follower{} = follower,
          follow_as_data
        ) do
-    unless follower.target_actor.manually_approves_followers do
+    %Actor{id: relay_id} = Relay.get_actor()
+
+    unless follower.target_actor.manually_approves_followers or
+             follower.target_actor.id == relay_id do
       {:accept,
        ActivityPub.accept(
          :follow,

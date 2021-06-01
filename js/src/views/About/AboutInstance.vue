@@ -42,9 +42,13 @@
       <table class="table is-fullwidth">
         <tr>
           <td>{{ $t("Instance languages") }}</td>
-          <td :title="this.config ? this.config.languages.join(', ') : ''">
+          <td
+            v-if="config.languages.length > 0"
+            :title="this.config ? this.config.languages.join(', ') : ''"
+          >
             {{ formattedLanguageList }}
           </td>
+          <td v-else>{{ $t("No information") }}</td>
         </tr>
         <tr>
           <td>{{ $t("Mobilizon version") }}</td>
@@ -69,6 +73,29 @@
           <td>{{ $t("Anonymous participations") }}</td>
           <td v-if="config.anonymous.participation.allowed">
             {{ $t("If allowed by organizer") }}
+          </td>
+          <td v-else>{{ $t("Disabled") }}</td>
+        </tr>
+        <tr class="instance-feeds">
+          <td>{{ $t("Instance feeds") }}</td>
+          <td v-if="config.instanceFeeds.enabled" class="buttons">
+            <b-button
+              tag="a"
+              size="is-small"
+              icon-left="rss"
+              href="/feed/instance/atom"
+              target="_blank"
+              >{{ $t("RSS/Atom Feed") }}</b-button
+            >
+
+            <b-button
+              tag="a"
+              size="is-small"
+              icon-left="calendar-sync"
+              href="/feed/instance/ics"
+              target="_blank"
+              >{{ $t("ICS/WebCal Feed") }}</b-button
+            >
           </td>
           <td v-else>{{ $t("Disabled") }}</td>
         </tr>
@@ -97,11 +124,11 @@ import langs from "../../i18n/langs.json";
       query: LANGUAGES_CODES,
       variables() {
         return {
-          codes: this.config.languages,
+          codes: this?.config.languages,
         };
       },
       skip() {
-        return !this.config || !this.config.languages;
+        return !this.config || !this.config?.languages;
       },
     },
   },
@@ -175,6 +202,15 @@ section {
         overflow: hidden;
         text-overflow: ellipsis;
       }
+    }
+  }
+  tr.instance-feeds {
+    height: 3rem;
+    td:first-child {
+      vertical-align: middle;
+    }
+    td:last-child {
+      height: 3rem;
     }
   }
 }

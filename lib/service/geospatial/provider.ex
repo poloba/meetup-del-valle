@@ -74,10 +74,15 @@ defmodule Mobilizon.Service.Geospatial.Provider do
     %Geo.Point{coordinates: {x, y}, srid: srid}
   end
 
-  def coordinates([x, y], srid) when is_bitstring(x) and is_bitstring(y) do
+  def coordinates([x, y], srid) when is_binary(x) and is_binary(y) do
     %Geo.Point{coordinates: {String.to_float(x), String.to_float(y)}, srid: srid}
   end
 
   @spec coordinates(any) :: nil
   def coordinates(_, _), do: nil
+
+  @spec endpoint(atom()) :: String.t()
+  def endpoint(provider) do
+    Application.get_env(:mobilizon, provider) |> get_in([:endpoint])
+  end
 end

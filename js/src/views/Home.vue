@@ -247,15 +247,15 @@
         v-if="closeEvents.total > 0 && loggedUser.settings.location"
       >
         <h2 class="is-size-2 has-text-weight-bold">
-          {{ $t("Close events") }}
+          {{ $t("Events nearby") }}
         </h2>
         <p>
           {{
             $tc(
               "Within {number} kilometers of {place}",
-              loggedUser.settings.location.radius,
+              loggedUser.settings.location.range,
               {
-                number: loggedUser.settings.location.radius,
+                number: loggedUser.settings.location.range,
                 place: loggedUser.settings.location.name,
               }
             )
@@ -315,7 +315,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import { ParticipantRole } from "@/types/enums";
+import { EventSortField, ParticipantRole, SortDirection } from "@/types/enums";
 import { Paginate } from "@/types/paginate";
 import { supportsWebPFormat } from "@/utils/support";
 import { IParticipant, Participant } from "../types/participant.model";
@@ -342,6 +342,10 @@ import Subtitle from "../components/Utils/Subtitle.vue";
     events: {
       query: FETCH_EVENTS,
       fetchPolicy: "no-cache", // Debug me: https://github.com/apollographql/apollo-client/issues/3030
+      variables: {
+        orderBy: EventSortField.INSERTED_AT,
+        direction: SortDirection.DESC,
+      },
     },
     currentActor: {
       query: CURRENT_ACTOR_CLIENT,
@@ -379,15 +383,15 @@ import Subtitle from "../components/Utils/Subtitle.vue";
       variables() {
         return {
           location: this.loggedUser?.settings?.location?.geohash,
-          radius: this.loggedUser?.settings?.location?.radius,
+          radius: this.loggedUser?.settings?.location?.range,
         };
       },
       update: (data) => data.searchEvents,
       skip() {
         return (
-          this.currentUser?.isLoggedIn === false &&
-          this.loggedUser?.settings?.location?.geohash &&
-          this.loggedUser?.settings?.location?.radius
+          !this.currentUser?.isLoggedIn ||
+          !this.loggedUser?.settings?.location?.geohash ||
+          !this.loggedUser?.settings?.location?.range
         );
       },
     },

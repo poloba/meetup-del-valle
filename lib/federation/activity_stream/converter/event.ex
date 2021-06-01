@@ -70,7 +70,7 @@ defmodule Mobilizon.Federation.ActivityStream.Converter.Event do
         status: object |> Map.get("ical:status", "CONFIRMED") |> String.downcase(),
         online_address: object |> Map.get("attachment", []) |> get_online_address(),
         phone_address: object["phoneAddress"],
-        draft: false,
+        draft: object["draft"] == true,
         url: object["id"],
         uuid: object["uuid"],
         tags: tags,
@@ -119,7 +119,7 @@ defmodule Mobilizon.Federation.ActivityStream.Converter.Event do
       "commentsEnabled" => event.options.comment_moderation == :allow_all,
       "anonymousParticipationEnabled" => event.options.anonymous_participation,
       "attachment" => [],
-      # "draft" => event.draft,
+      "draft" => event.draft,
       "ical:status" => event.status |> to_string |> String.upcase(),
       "id" => event.url,
       "url" => event.url
@@ -155,7 +155,7 @@ defmodule Mobilizon.Federation.ActivityStream.Converter.Event do
   end
 
   @spec get_address(map | binary | nil) :: integer | nil
-  defp get_address(address_url) when is_bitstring(address_url) do
+  defp get_address(address_url) when is_binary(address_url) do
     get_address(%{"id" => address_url})
   end
 

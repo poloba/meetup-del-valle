@@ -8,6 +8,7 @@ import Config
 # with brunch.io to recompile .js and .css sources.
 config :mobilizon, Mobilizon.Web.Endpoint,
   http: [
+    ip: {127, 0, 0, 1},
     port: 4000
   ],
   url: [
@@ -91,24 +92,9 @@ config :mobilizon, :instance,
 
 # config :mobilizon, :activitypub, sign_object_fetches: false
 
+config :mobilizon, Mobilizon.Web.Upload.Uploader.Local, uploads: "uploads"
+
 config :mobilizon, :anonymous,
   reports: [
     allowed: true
   ]
-
-require Logger
-
-cond do
-  System.get_env("INSTANCE_CONFIG") &&
-      File.exists?("./config/#{System.get_env("INSTANCE_CONFIG")}") ->
-    import_config System.get_env("INSTANCE_CONFIG")
-
-  System.get_env("DOCKER", "false") == "false" && File.exists?("./config/dev.secret.exs") ->
-    import_config "dev.secret.exs"
-
-  System.get_env("DOCKER", "false") == "true" ->
-    Logger.info("Using environment configuration for Docker")
-
-  true ->
-    Logger.error("No configuration file found")
-end
