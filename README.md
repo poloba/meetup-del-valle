@@ -3,7 +3,6 @@
     <img src="https://vive.elvalledigital.es/img/viveelvalle_logo.png" alt="Vive el Valle">
   </a>
 </h1>
-
 <h1 align="center">
   <a href="https://joinmobilizon.org">
     <img src="https://lutim.cpy.re/qVYC86G9.png" alt="Mobilizon">
