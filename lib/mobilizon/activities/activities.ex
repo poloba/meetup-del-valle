@@ -53,7 +53,7 @@ defmodule Mobilizon.Activities do
               @resource_activity_subjects ++
               @member_activity_subjects ++ @settings_activity_subjects
 
-  @object_type ["event", "actor", "post", "discussion", "resource", "member", "group"]
+  @object_type ["event", "actor", "post", "discussion", "resource", "member", "group", "comment"]
 
   defenum(Type, @activity_types)
   defenum(Subject, @subjects)
@@ -72,13 +72,14 @@ defmodule Mobilizon.Activities do
     Repo.all(Activity)
   end
 
-  @spec list_activities_for_group(
+  @spec list_group_activities_for_member(
+          integer() | String.t(),
           integer() | String.t(),
           Keyword.t(),
           integer() | nil,
           integer() | nil
         ) :: Page.t()
-  def list_activities_for_group(
+  def list_group_activities_for_member(
         group_id,
         actor_asking_id,
         filters \\ [],
@@ -91,6 +92,27 @@ defmodule Mobilizon.Activities do
       on: m.parent_id == a.group_id and m.actor_id == ^actor_asking_id
     )
     |> where([a, m], a.inserted_at >= m.member_since)
+    |> filter_object_type(Keyword.get(filters, :type))
+    |> filter_author(Keyword.get(filters, :author), actor_asking_id)
+    |> order_by(desc: :inserted_at)
+    |> preload([:author, :group])
+    |> Page.build_page(page, limit)
+  end
+
+  @spec list_group_activities(
+          integer() | String.t(),
+          Keyword.t(),
+          integer() | nil,
+          integer() | nil
+        ) :: Page.t()
+  def list_group_activities(
+        group_id,
+        filters \\ [],
+        page \\ nil,
+        limit \\ nil
+      ) do
+    Activity
+    |> where([a], a.group_id == ^group_id)
     |> filter_object_type(Keyword.get(filters, :type))
     |> order_by(desc: :inserted_at)
     |> preload([:author, :group])
@@ -137,12 +159,21 @@ defmodule Mobilizon.Activities do
 
   def activity_types, do: @activity_types
 
-  @spec filter_object_type(Query.t(), atom()) :: Query.t()
-  defp filter_object_type(query, :type) do
-    where(query, [q], q.type == ^:type)
+  @spec filter_object_type(Query.t(), atom() | nil) :: Query.t()
+  defp filter_object_type(query, nil), do: query
+
+  defp filter_object_type(query, type) do
+    where(query, [q], q.type == ^type)
   end
 
-  defp filter_object_type(query, _) do
-    query
+  @spec filter_author(Query.t(), atom() | nil, integer() | String.t()) :: Query.t()
+  defp filter_author(query, nil, _), do: query
+
+  defp filter_author(query, :self, actor_asking_id) do
+    where(query, [q], q.author_id == ^actor_asking_id)
+  end
+
+  defp filter_author(query, :by, actor_asking_id) do
+    where(query, [q], q.author_id != ^actor_asking_id)
   end
 end

@@ -188,7 +188,7 @@ export const GROUP_FIELDS_FRAGMENTS = gql`
 `;
 
 export const FETCH_GROUP = gql`
-  query(
+  query (
     $name: String!
     $afterDateTime: DateTime
     $beforeDateTime: DateTime
@@ -206,7 +206,7 @@ export const FETCH_GROUP = gql`
 `;
 
 export const GET_GROUP = gql`
-  query(
+  query (
     $id: ID!
     $afterDateTime: DateTime
     $beforeDateTime: DateTime
@@ -326,6 +326,7 @@ export const GROUP_TIMELINE = gql`
   query GroupTimeline(
     $preferredUsername: String!
     $type: ActivityType
+    $author: ActivityAuthor
     $page: Int
     $limit: Int
   ) {
@@ -334,7 +335,7 @@ export const GROUP_TIMELINE = gql`
       preferredUsername
       domain
       name
-      activity(type: $type, page: $page, limit: $limit) {
+      activity(type: $type, author: $author, page: $page, limit: $limit) {
         total
         elements {
           id
@@ -391,6 +392,9 @@ export const GROUP_TIMELINE = gql`
               id
               title
               slug
+            }
+            ... on Comment {
+              id
             }
             ... on Group {
               id

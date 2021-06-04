@@ -60,6 +60,7 @@ defmodule Mobilizon.GraphQL.Resolvers.Discussion do
       {:ok, discussion}
     else
       nil -> {:error, dgettext("errors", "Discussion not found")}
+      {:member, false} -> {:error, :unauthorized}
     end
   end
 
@@ -104,10 +105,15 @@ defmodule Mobilizon.GraphQL.Resolvers.Discussion do
            }) do
       {:ok, discussion}
     else
+      {:error, type, err, _} when type in [:discussion, :comment] ->
+        {:error, err}
+
       {:member, false} ->
         {:error, :unauthorized}
     end
   end
+
+  def create_discussion(_, _, _), do: {:error, :unauthenticated}
 
   def reply_to_discussion(
         _parent,
@@ -141,8 +147,13 @@ defmodule Mobilizon.GraphQL.Resolvers.Discussion do
                origin_comment_id || previous_in_reply_to_comment_id || last_comment_id
            }) do
       {:ok, discussion}
+    else
+      {:no_discussion, _} ->
+        {:error, :discussion_not_found}
     end
   end
+
+  def reply_to_discussion(_, _, _), do: {:error, :unauthenticated}
 
   @spec update_discussion(map(), map(), map()) :: {:ok, Discussion.t()}
   def update_discussion(
@@ -166,8 +177,13 @@ defmodule Mobilizon.GraphQL.Resolvers.Discussion do
              }
            ) do
       {:ok, discussion}
+    else
+      {:member, false} ->
+        {:error, :unauthorized}
     end
   end
+
+  def update_discussion(_, _, _), do: {:error, :unauthenticated}
 
   def delete_discussion(_parent, %{discussion_id: discussion_id}, %{
         context: %{
@@ -186,8 +202,9 @@ defmodule Mobilizon.GraphQL.Resolvers.Discussion do
         {:error, dgettext("errors", "No discussion with ID %{id}", id: discussion_id)}
 
       {:member, _} ->
-        {:error,
-         dgettext("errors", "You are not a member of the group the discussion belongs to")}
+        {:error, :unauthorized}
     end
   end
+
+  def delete_discussion(_, _, _), do: {:error, :unauthenticated}
 end

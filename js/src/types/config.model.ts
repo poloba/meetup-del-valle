@@ -82,11 +82,20 @@ export interface IConfig {
   features: {
     eventCreation: boolean;
     groups: boolean;
+    koenaConnect: boolean;
   };
   federating: boolean;
   version: string;
   auth: {
     ldap: boolean;
     oauthProviders: IOAuthProvider[];
+  };
+  uploadLimits: {
+    default: number;
+    avatar: number;
+    banner: number;
+  };
+  instanceFeeds: {
+    enabled: boolean;
   };
 }

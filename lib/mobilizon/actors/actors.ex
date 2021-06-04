@@ -156,7 +156,7 @@ defmodule Mobilizon.Actors do
 
     query
     |> filter_by_type(type)
-    |> filter_by_name(String.split(name, "@"))
+    |> filter_by_name(name |> String.trim() |> String.trim_leading("@") |> String.split("@"))
     |> Repo.one()
   end
 
@@ -333,28 +333,33 @@ defmodule Mobilizon.Actors do
       |> Multi.run(:remove_avatar, fn _, _ -> remove_avatar(actor) end)
 
     multi =
-      if type == :Group do
-        multi
-        |> Multi.run(:delete_remote_members, fn _, _ ->
-          delete_group_elements(actor, :remote_members)
-        end)
-        |> Multi.run(:delete_group_organized_events, fn _, _ ->
-          delete_group_elements(actor, :events)
-        end)
-        |> Multi.run(:delete_group_posts, fn _, _ ->
-          delete_group_elements(actor, :posts)
-        end)
-        |> Multi.run(:delete_group_resources, fn _, _ ->
-          delete_group_elements(actor, :resources)
-        end)
-        |> Multi.run(:delete_group_todo_lists, fn _, _ ->
-          delete_group_elements(actor, :todo_lists)
-        end)
-        |> Multi.run(:delete_group_discussions, fn _, _ ->
-          delete_group_elements(actor, :discussions)
-        end)
-      else
-        multi
+      case type do
+        :Group ->
+          multi
+          |> Multi.run(:delete_remote_members, fn _, _ ->
+            delete_group_elements(actor, :remote_members)
+          end)
+          |> Multi.run(:delete_group_organized_events, fn _, _ ->
+            delete_group_elements(actor, :events)
+          end)
+          |> Multi.run(:delete_group_posts, fn _, _ ->
+            delete_group_elements(actor, :posts)
+          end)
+          |> Multi.run(:delete_group_resources, fn _, _ ->
+            delete_group_elements(actor, :resources)
+          end)
+          |> Multi.run(:delete_group_todo_lists, fn _, _ ->
+            delete_group_elements(actor, :todo_lists)
+          end)
+          |> Multi.run(:delete_group_discussions, fn _, _ ->
+            delete_group_elements(actor, :discussions)
+          end)
+
+        :Person ->
+          # When deleting a profile, reset default_actor_id
+          Multi.run(multi, :reset_default_actor_id, fn _, _ ->
+            reset_default_actor_id(actor)
+          end)
       end
 
     multi =
@@ -374,12 +379,22 @@ defmodule Mobilizon.Actors do
 
       {:error, remove, error, _} when remove in [:remove_banner, :remove_avatar] ->
         Logger.error("Error while deleting actor's banner or avatar")
-        Logger.error(inspect(error, pretty: true))
+
+        Sentry.capture_message("Error while deleting actor's banner or avatar",
+          extra: %{err: error}
+        )
+
+        Logger.debug(inspect(error, pretty: true))
         {:error, error}
 
       err ->
         Logger.error("Unknown error while deleting actor")
-        Logger.error(inspect(err, pretty: true))
+
+        Sentry.capture_message("Error while deleting actor's banner or avatar",
+          extra: %{err: err}
+        )
+
+        Logger.debug(inspect(err, pretty: true))
         {:error, err}
     end
   end
@@ -485,6 +500,10 @@ defmodule Mobilizon.Actors do
   defp filter_suspended(query, true), do: where(query, [a], a.suspended)
   defp filter_suspended(query, false), do: where(query, [a], not a.suspended)
 
+  @spec filter_out_anonymous_actor_id(Ecto.Query.t(), integer() | String.t()) :: Ecto.Query.t()
+  defp filter_out_anonymous_actor_id(query, anonymous_actor_id),
+    do: where(query, [a], a.id != ^anonymous_actor_id)
+
   @doc """
   Returns the list of local actors by their username.
   """
@@ -512,12 +531,15 @@ defmodule Mobilizon.Actors do
         page \\ nil,
         limit \\ nil
       ) do
+    anonymous_actor_id = Mobilizon.Config.anonymous_actor_id()
+
     Actor
     |> actor_by_username_or_name_query(term)
     |> actors_for_location(Keyword.get(options, :location), Keyword.get(options, :radius))
     |> filter_by_types(Keyword.get(options, :actor_type, :Group))
     |> filter_by_minimum_visibility(Keyword.get(options, :minimum_visibility, :public))
     |> filter_suspended(false)
+    |> filter_out_anonymous_actor_id(anonymous_actor_id)
     |> Page.build_page(page, limit)
   end
 
@@ -652,10 +674,11 @@ defmodule Mobilizon.Actors do
   @doc """
   Lists the groups.
   """
-  @spec list_groups_for_stream :: Enum.t()
-  def list_external_groups_for_stream do
+  @spec list_external_groups(non_neg_integer()) :: list(Actor.t())
+  def list_external_groups(limit \\ 100) when limit > 0 do
     external_groups_query()
-    |> Repo.stream()
+    |> limit(^limit)
+    |> Repo.all()
   end
 
   @doc """
@@ -1282,10 +1305,12 @@ defmodule Mobilizon.Actors do
   @doc """
   Whether the actor needs to be updated.
 
-  Local actors obviously don't need to be updated
+  Local actors obviously don't need to be updated, neither do suspended ones
   """
   @spec needs_update?(Actor.t()) :: boolean
   def needs_update?(%Actor{domain: nil}), do: false
+
+  def needs_update?(%Actor{suspended: true}), do: false
 
   def needs_update?(%Actor{last_refreshed_at: nil, domain: domain}) when not is_nil(domain),
     do: true
@@ -1811,6 +1836,24 @@ defmodule Mobilizon.Actors do
       {:error, res}
     end
   end
+
+  @spec reset_default_actor_id(Actor.t()) :: {:ok, User.t()} | {:error, :user_not_found}
+  defp reset_default_actor_id(%Actor{type: :Person, user: %User{id: user_id} = user, id: actor_id}) do
+    Logger.debug("reset_default_actor_id")
+
+    new_actor_id =
+      user
+      |> Users.get_actors_for_user()
+      |> Enum.map(& &1.id)
+      |> Enum.find(&(&1 !== actor_id))
+
+    {:ok, Users.update_user_default_actor(user_id, new_actor_id)}
+  rescue
+    _e in Ecto.NoResultsError ->
+      {:error, :user_not_found}
+  end
+
+  defp reset_default_actor_id(%Actor{type: :Person, user: nil}), do: {:ok, nil}
 
   defp accumulate_paginated_elements(
          %Actor{} = actor,

@@ -1,7 +1,7 @@
 defmodule Mobilizon.Mixfile do
   use Mix.Project
 
-  @version "1.1.0"
+  @version "1.1.4"
 
   def project do
     [
@@ -27,12 +27,14 @@ defmodule Mobilizon.Mixfile do
       ],
       name: "Vive el Valle",
       source_url: "https://github.com/poloba/meetup-del-valle",
-      homepage_url: "https://vive.elvalledigital.es",
+      homepage_url: "https://valle-prepro.pol.ac",
       docs: docs(),
       releases: [
         mobilizon: [
+          include_executables_for: [:unix],
           applications: [eldap: :transient],
-          config_providers: [{Mobilizon.ConfigProvider, "/etc/mobilizon/config.exs"}]
+          config_providers: [{Mobilizon.ConfigProvider, "/etc/mobilizon/config.exs"}],
+          steps: [:assemble, &copy_files/1, &copy_config/1]
         ]
       ]
     ]
@@ -46,6 +48,23 @@ defmodule Mobilizon.Mixfile do
       mod: {Mobilizon, []},
       extra_applications: [:logger, :runtime_tools, :guardian, :bamboo, :geolix, :crypto, :cachex]
     ]
+  end
+
+  def copy_files(%{path: target_path} = release) do
+    File.cp_r!("./rel/overlays", target_path)
+    release
+  end
+
+  def copy_config(%{path: target_path} = release) do
+    support_path = Path.join([target_path, "support"])
+    File.mkdir!(support_path)
+
+    File.cp_r!(
+      "./support",
+      support_path
+    )
+
+    release
   end
 
   # Specifies which paths to compile per environment.
@@ -100,11 +119,12 @@ defmodule Mobilizon.Mixfile do
       {:http_sign, "~> 0.1.1"},
       {:ecto_enum, "~> 1.4"},
       {:ex_ical, "~> 0.2"},
-      {:bamboo, "~> 1.5"},
-      {:bamboo_smtp, "~> 3.0"},
+      {:bamboo, "~> 2.1"},
+      {:bamboo_phoenix, "~> 1.0"},
+      {:bamboo_smtp, "~> 4.0"},
       {:geolix, "~> 2.0"},
       {:geolix_adapter_mmdb2, "~> 0.6.0"},
-      {:absinthe, "~> 1.5.0"},
+      {:absinthe, "~> 1.6"},
       {:absinthe_phoenix, "~> 2.0.1"},
       {:absinthe_plug, "~> 1.5.0"},
       {:dataloader, "~> 1.0.6"},
@@ -137,10 +157,12 @@ defmodule Mobilizon.Mixfile do
       {:tesla, "~> 1.4.0"},
       {:sitemapper, "~> 0.5.0"},
       {:xml_builder, "~> 2.1.1"},
-      {:remote_ip, "~> 0.2.0"},
+      {:remote_ip, "~> 1.0.0"},
       {:ex_cldr_languages, "~> 0.2.1"},
       {:slugger, "~> 0.3"},
       {:sentry, "~> 8.0"},
+      {:html_entities, "~> 0.5"},
+      {:sweet_xml, "~> 0.6.6"},
       # Dev and test dependencies
       {:phoenix_live_reload, "~> 1.2", only: [:dev, :e2e]},
       {:ex_machina, "~> 2.3", only: [:dev, :test]},
@@ -148,7 +170,7 @@ defmodule Mobilizon.Mixfile do
       {:ex_doc, "~> 0.23", only: [:dev, :test], runtime: false},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
       {:ex_unit_notifier, "~> 1.0", only: :test},
-      {:dialyxir, "~> 1.0.0", only: [:dev], runtime: false},
+      {:dialyxir, "~> 1.1", only: [:dev], runtime: false},
       {:exvcr, "~> 0.12", only: :test},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:mock, "~> 0.3.4", only: :test},

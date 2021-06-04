@@ -33,6 +33,8 @@ defmodule Mobilizon.GraphQL.Schema.ConfigType do
       description: "The instance's enabled resource providers"
     )
 
+    field(:upload_limits, :upload_limits, description: "The configuration for upload limits")
+
     field(:timezones, list_of(:string), description: "The instance's available timezones")
     field(:features, :features, description: "The instance's features")
     field(:version, :string, description: "The instance's version")
@@ -61,6 +63,7 @@ defmodule Mobilizon.GraphQL.Schema.ConfigType do
     field(:rules, :string, description: "The instance's rules")
 
     field(:auth, :auth, description: "The instance auth methods")
+    field(:instance_feeds, :instance_feeds, description: "The instance's feed settings")
   end
 
   @desc """
@@ -265,6 +268,8 @@ defmodule Mobilizon.GraphQL.Schema.ConfigType do
     field(:event_creation, :boolean,
       description: "Whether event creation is allowed on this instance"
     )
+
+    field(:koena_connect, :boolean, description: "Activate link to Koena Connect")
   end
 
   @desc """
@@ -281,6 +286,19 @@ defmodule Mobilizon.GraphQL.Schema.ConfigType do
   object :oauth_provider do
     field(:id, :string, description: "The provider ID")
     field(:label, :string, description: "The label for the auth provider")
+  end
+
+  @desc """
+  An upload limits configuration
+  """
+  object :upload_limits do
+    field(:default, :integer, description: "The default limitation, in bytes")
+    field(:avatar, :integer, description: "The avatar limitation, in bytes")
+    field(:banner, :integer, description: "The banner limitation, in bytes")
+  end
+
+  object :instance_feeds do
+    field(:enabled, :boolean, description: "Whether the instance-wide feeds are enabled")
   end
 
   object :config_queries do
